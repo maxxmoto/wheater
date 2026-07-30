@@ -136,9 +136,7 @@
             body.theme-nothing .nt-hero-grid { grid-template-columns:1fr!important; }
             body.theme-nothing .nt-hero-grid .nt-hero-grid { grid-template-columns:1fr 1fr!important; }
             body.theme-nothing .nt-card[style*="min-height"] { min-height:auto!important; padding:1.5rem!important; }
-            body.theme-nothing .nt-card[style*="min-height"] .nt-hero-temp { font-size:5rem!important; }
-body.theme-nothing .nt-hero-temp { font-family:'VT323',monospace; font-size:8rem; line-height:0.8; margin-left:-1rem; color:#E60000; }
-@media (max-width:480px) { body.theme-nothing .nt-hero-temp { font-size:5rem!important; } }
+            body.theme-nothing .nt-hero-temp { font-family:'VT323',monospace; font-size:8rem; line-height:0.8; margin-left:-1rem; color:#E60000; }
             body.theme-nothing header { flex-direction:column!important; align-items:stretch!important; }
             body.theme-nothing header form { max-width:100%!important; }
             body.theme-nothing [style*="max-width:1280px"] { padding-left:1rem!important; padding-right:1rem!important; }
@@ -163,7 +161,8 @@ body.theme-nothing .nt-hero-temp { font-family:'VT323',monospace; font-size:8rem
         body.theme-nothing .theme-nothing-content { display:block; }
         body.theme-nothing .ac-item:hover, body.theme-nothing .ac-item.active { background:rgba(230,0,0,0.1); }
         body.theme-nothing #autocomplete-list { border-radius:0!important; }
-        @media (min-width:768px) { body.theme-nothing .nt-hero-grid { grid-template-columns:1fr 1fr!important; } }
+        body.theme-nothing .nt-hero-grid { display:grid; grid-template-columns:1fr; gap:1.5rem; }
+        @media (min-width:768px) { body.theme-nothing .nt-hero-grid { grid-template-columns:1fr 1fr; } }
     </style>
 </head>
 <body class="theme-glass">
@@ -573,33 +572,28 @@ body.theme-nothing .nt-hero-temp { font-family:'VT323',monospace; font-size:8rem
         body.theme-nothing input { border-radius:0!important; }
 
         @media (max-width:768px) {
-            body.theme-nothing { --nt-mobile:1; }
+            body.theme-nothing .theme-nothing-content > div { padding-left:1rem!important; padding-right:1rem!important; }
             body.theme-nothing .nt-hero-grid { grid-template-columns:1fr!important; }
             body.theme-nothing .nt-hero-grid .nt-hero-grid { grid-template-columns:1fr 1fr!important; }
-            body.theme-nothing header { flex-direction:column!important; align-items:stretch!important; }
-            body.theme-nothing header form { max-width:100%!important; }
-            body.theme-nothing [style*="max-width:1280px"] { padding-left:1rem!important; padding-right:1rem!important; }
-            body.theme-nothing .nt-card { aspect-ratio:auto!important; }
-            body.theme-nothing .nt-card[style*="min-height:350px"] { min-height:auto!important; padding:1.5rem!important; }
-            body.theme-nothing .nt-card[style*="padding:2rem"] { padding:1rem!important; }
-            body.theme-nothing .nt-hero-temp { font-size:5rem!important; }
-            body.theme-nothing [style*="width:8rem"][style*="border-left:2px"] { width:5rem!important; height:5rem!important; }
-            body.theme-nothing [style*="width:8rem"][style*="border-left:2px"] i { width:2.5rem!important; height:2.5rem!important; }
-            body.theme-nothing .nt-card .nt-card .nt-card { padding:1rem!important; }
-            body.theme-nothing .nt-card > [style*="display:flex"][style*="overflow-x:auto"] { gap:0.75rem!important; }
-            body.theme-nothing [style*="min-width:80px"] { min-width:55px!important; padding:0.5rem!important; }
-            body.theme-nothing [style*="min-width:80px"] > [style*="font-size:12px"] { font-size:10px!important; margin-bottom:0.5rem!important; }
-            body.theme-nothing [style*="min-width:80px"] i[data-lucide] { width:1.25rem!important; height:1.25rem!important; margin-bottom:0.5rem!important; }
-            body.theme-nothing [style*="min-width:80px"] [style*="font-family:'VT323'"] { font-size:1.25rem!important; }
-            body.theme-nothing [style*="display:grid"][style*="gap:0"] > div { padding:0.5rem 0!important; }
-            body.theme-nothing [style*="display:grid"][style*="gap:0"] [style*="width:5rem"][style*="font-weight:700"] { width:3.5rem!important; font-size:11px!important; }
-            body.theme-nothing [style*="display:grid"][style*="gap:0"] [style*="width:8rem"] { width:5rem!important; }
-            body.theme-nothing [style*="display:grid"][style*="gap:0"] [style*="font-family:'VT323'"] { font-size:1.1rem!important; }
-            body.theme-nothing [style*="display:grid"][style*="gap:0"] i[data-lucide] { width:1.2rem!important; height:1.2rem!important; }
-            body.theme-nothing #theme-toggle2 { font-size:9px!important; padding:0.3rem 0.5rem!important; top:0.5rem!important; right:0.5rem!important; }
+            body.theme-nothing .theme-nothing-content header { flex-direction:column; align-items:stretch; }
+            body.theme-nothing .theme-nothing-content header > form { max-width:none; }
+            body.theme-nothing .nt-card { aspect-ratio:auto; }
+        body.theme-nothing .nt-metrics-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+            body.theme-nothing .nt-hourly-wrap { gap:0.75rem; }
+            body.theme-nothing .nt-hourly-item { min-width:55px; padding:0.5rem; }
+            body.theme-nothing .nt-hourly-item > span:first-child { font-size:10px; margin-bottom:0.5rem; }
+            body.theme-nothing .nt-hourly-item i[data-lucide] { width:1.25rem; height:1.25rem; margin-bottom:0.5rem; }
+            body.theme-nothing .nt-hourly-item > span:last-child { font-size:1.25rem; }
+            body.theme-nothing .nt-week-row { padding:0.5rem 0; }
+            body.theme-nothing .nt-week-day { width:3.5rem; font-size:11px; }
+            body.theme-nothing .nt-week-temps { width:5rem; }
+            body.theme-nothing .nt-week-temps span { font-size:1.1rem; }
+            body.theme-nothing .nt-week-row i[data-lucide] { width:1.2rem; height:1.2rem; }
+            body.theme-nothing #theme-toggle2 { font-size:9px; padding:0.3rem 0.5rem; top:0.5rem; right:0.5rem; }
         }
         @media (max-width:480px) {
-            body.theme-nothing .nt-hero-grid .nt-hero-grid { grid-template-columns:1fr!important; }
+            body.theme-nothing .nt-hero-grid .nt-hero-grid { grid-template-columns:1fr; }
+            body.theme-nothing .nt-metrics-grid { grid-template-columns:1fr; }
         }
     </style>
 
@@ -628,8 +622,8 @@ body.theme-nothing .nt-hero-temp { font-family:'VT323',monospace; font-size:8rem
         <div style="display:grid;grid-template-columns:1fr;gap:1.5rem;">
 
             <!-- HERO + METRICS -->
-            <div style="display:grid;grid-template-columns:1fr;gap:1.5rem;" class="nt-hero-grid">
-                <div class="nt-card" style="padding:2rem 3rem;min-height:350px;position:relative;overflow:hidden;">
+            <div class="nt-hero-grid">
+                <div class="nt-card nt-hero-card" style="padding:2rem 3rem;min-height:350px;position:relative;overflow:hidden;">
                     <div style="position:absolute;top:0;right:0;width:8rem;height:8rem;border-left:2px solid #000;border-bottom:2px solid #000;display:flex;align-items:center;justify-content:center;background:#F8F8F8;">
                         <i data-lucide="sun" style="width:4rem;height:4rem;color:#E60000;" stroke-width="1.5"></i>
                     </div>
@@ -643,7 +637,7 @@ body.theme-nothing .nt-hero-temp { font-family:'VT323',monospace; font-size:8rem
                     </div>
                 </div>
 
-                <div class="nt-hero-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                <div class="nt-hero-grid nt-metrics-grid">
                     <!-- Wind -->
                     <div class="nt-card" style="padding:1.5rem;display:flex;flex-direction:column;justify-content:space-between;aspect-ratio:1;">
                         <div style="display:flex;justify-content:space-between;align-items:start;">
@@ -701,55 +695,55 @@ body.theme-nothing .nt-hero-temp { font-family:'VT323',monospace; font-size:8rem
             </div>
 
             <!-- HOURLY -->
-            <div class="nt-card" style="padding:2rem;">
+            <div class="nt-card nt-section">
                 <div style="display:flex;align-items:center;gap:1rem;border-bottom:2px solid #000;padding-bottom:1rem;margin-bottom:1.5rem;">
                     <span style="background:#000;color:#fff;padding:0.25rem 0.75rem;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:'Space Mono',monospace;">24H FORECAST</span>
                 </div>
-                <div style="display:flex;overflow-x:auto;gap:1.5rem;scrollbar-width:none;">
+                <div class="nt-hourly-wrap" style="display:flex;overflow-x:auto;gap:1.5rem;scrollbar-width:none;">
                     
-                    <div style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid #E60000;background:#F8F8F8;">
+                    <div class="nt-hourly-item" style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid #E60000;background:#F8F8F8;">
                         <span style="font-size:12px;font-weight:700;margin-bottom:1rem;color:#E60000;font-family:'Space Mono',monospace;">Сейчас</span>
                         <i data-lucide="sun" style="width:2rem;height:2rem;margin-bottom:1rem;" stroke-width="1.5"></i>
                         <span style="font-family:'VT323',monospace;font-size:2rem;">24°</span>
                     </div>
                     
-                    <div style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
+                    <div class="nt-hourly-item" style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
                         <span style="font-size:12px;font-weight:700;margin-bottom:1rem;color:rgba(0,0,0,0.5);font-family:'Space Mono',monospace;">13:00</span>
                         <i data-lucide="sun" style="width:2rem;height:2rem;margin-bottom:1rem;" stroke-width="1.5"></i>
                         <span style="font-family:'VT323',monospace;font-size:2rem;">25°</span>
                     </div>
                     
-                    <div style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
+                    <div class="nt-hourly-item" style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
                         <span style="font-size:12px;font-weight:700;margin-bottom:1rem;color:rgba(0,0,0,0.5);font-family:'Space Mono',monospace;">14:00</span>
                         <i data-lucide="cloud" style="width:2rem;height:2rem;margin-bottom:1rem;" stroke-width="1.5"></i>
                         <span style="font-family:'VT323',monospace;font-size:2rem;">26°</span>
                     </div>
                     
-                    <div style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
+                    <div class="nt-hourly-item" style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
                         <span style="font-size:12px;font-weight:700;margin-bottom:1rem;color:rgba(0,0,0,0.5);font-family:'Space Mono',monospace;">15:00</span>
                         <i data-lucide="cloud" style="width:2rem;height:2rem;margin-bottom:1rem;" stroke-width="1.5"></i>
                         <span style="font-family:'VT323',monospace;font-size:2rem;">26°</span>
                     </div>
                     
-                    <div style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
+                    <div class="nt-hourly-item" style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
                         <span style="font-size:12px;font-weight:700;margin-bottom:1rem;color:rgba(0,0,0,0.5);font-family:'Space Mono',monospace;">16:00</span>
                         <i data-lucide="cloud-rain" style="width:2rem;height:2rem;margin-bottom:1rem;" stroke-width="1.5"></i>
                         <span style="font-family:'VT323',monospace;font-size:2rem;">25°</span>
                     </div>
                     
-                    <div style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
+                    <div class="nt-hourly-item" style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
                         <span style="font-size:12px;font-weight:700;margin-bottom:1rem;color:rgba(0,0,0,0.5);font-family:'Space Mono',monospace;">17:00</span>
                         <i data-lucide="cloud-rain" style="width:2rem;height:2rem;margin-bottom:1rem;" stroke-width="1.5"></i>
                         <span style="font-family:'VT323',monospace;font-size:2rem;">23°</span>
                     </div>
                     
-                    <div style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
+                    <div class="nt-hourly-item" style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
                         <span style="font-size:12px;font-weight:700;margin-bottom:1rem;color:rgba(0,0,0,0.5);font-family:'Space Mono',monospace;">18:00</span>
                         <i data-lucide="cloud" style="width:2rem;height:2rem;margin-bottom:1rem;" stroke-width="1.5"></i>
                         <span style="font-family:'VT323',monospace;font-size:2rem;">21°</span>
                     </div>
                     
-                    <div style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
+                    <div class="nt-hourly-item" style="min-width:80px;display:flex;flex-direction:column;align-items:center;padding:1rem;border:2px solid transparent;background:transparent;">
                         <span style="font-size:12px;font-weight:700;margin-bottom:1rem;color:rgba(0,0,0,0.5);font-family:'Space Mono',monospace;">19:00</span>
                         <i data-lucide="sun" style="width:2rem;height:2rem;margin-bottom:1rem;" stroke-width="1.5"></i>
                         <span style="font-family:'VT323',monospace;font-size:2rem;">19°</span>
@@ -759,102 +753,102 @@ body.theme-nothing .nt-hero-temp { font-family:'VT323',monospace; font-size:8rem
             </div>
 
             <!-- WEEKLY -->
-            <div class="nt-card" style="padding:2rem;">
+            <div class="nt-card nt-section">
                 <div style="display:flex;align-items:center;gap:1rem;border-bottom:2px solid #000;padding-bottom:1rem;margin-bottom:1.5rem;">
                     <span style="background:#000;color:#fff;padding:0.25rem 0.75rem;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:'Space Mono',monospace;">7-DAY FORECAST</span>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr;gap:0;">
                     
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                        <span style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Сегодня</span>
+                    <div class="nt-week-row" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                        <span class="nt-week-day" style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Сегодня</span>
                         <div style="flex:1;display:flex;justify-content:center;">
                             <i data-lucide="sun" style="width:1.5rem;height:1.5rem;opacity:0.5;" stroke-width="1.5"></i>
                         </div>
-                        <div style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
+                        <div class="nt-week-temps" style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;opacity:0.4;width:3rem;text-align:right;">14°</span>
                             <div style="width:2rem;height:2px;background:rgba(0,0,0,0.2);"></div>
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;width:3rem;text-align:right;">26°</span>
                         </div>
                     </div>
                     
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                        <span style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Вс</span>
+                    <div class="nt-week-row" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                        <span class="nt-week-day" style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Вс</span>
                         <div style="flex:1;display:flex;justify-content:center;">
                             <i data-lucide="sun" style="width:1.5rem;height:1.5rem;opacity:0.5;" stroke-width="1.5"></i>
                         </div>
-                        <div style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
+                        <div class="nt-week-temps" style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;opacity:0.4;width:3rem;text-align:right;">16°</span>
                             <div style="width:2rem;height:2px;background:rgba(0,0,0,0.2);"></div>
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;width:3rem;text-align:right;">28°</span>
                         </div>
                     </div>
                     
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                        <span style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Пн</span>
+                    <div class="nt-week-row" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                        <span class="nt-week-day" style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Пн</span>
                         <div style="flex:1;display:flex;justify-content:center;">
                             <i data-lucide="cloud-rain" style="width:1.5rem;height:1.5rem;opacity:0.5;" stroke-width="1.5"></i>
                         </div>
-                        <div style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
+                        <div class="nt-week-temps" style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;opacity:0.4;width:3rem;text-align:right;">15°</span>
                             <div style="width:2rem;height:2px;background:rgba(0,0,0,0.2);"></div>
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;width:3rem;text-align:right;">22°</span>
                         </div>
                     </div>
                     
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                        <span style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Вт</span>
+                    <div class="nt-week-row" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                        <span class="nt-week-day" style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Вт</span>
                         <div style="flex:1;display:flex;justify-content:center;">
                             <i data-lucide="cloud" style="width:1.5rem;height:1.5rem;opacity:0.5;" stroke-width="1.5"></i>
                         </div>
-                        <div style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
+                        <div class="nt-week-temps" style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;opacity:0.4;width:3rem;text-align:right;">12°</span>
                             <div style="width:2rem;height:2px;background:rgba(0,0,0,0.2);"></div>
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;width:3rem;text-align:right;">19°</span>
                         </div>
                     </div>
                     
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                        <span style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Ср</span>
+                    <div class="nt-week-row" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                        <span class="nt-week-day" style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Ср</span>
                         <div style="flex:1;display:flex;justify-content:center;">
                             <i data-lucide="sun" style="width:1.5rem;height:1.5rem;opacity:0.5;" stroke-width="1.5"></i>
                         </div>
-                        <div style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
+                        <div class="nt-week-temps" style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;opacity:0.4;width:3rem;text-align:right;">13°</span>
                             <div style="width:2rem;height:2px;background:rgba(0,0,0,0.2);"></div>
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;width:3rem;text-align:right;">21°</span>
                         </div>
                     </div>
                     
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                        <span style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Чт</span>
+                    <div class="nt-week-row" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                        <span class="nt-week-day" style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Чт</span>
                         <div style="flex:1;display:flex;justify-content:center;">
                             <i data-lucide="cloud" style="width:1.5rem;height:1.5rem;opacity:0.5;" stroke-width="1.5"></i>
                         </div>
-                        <div style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
+                        <div class="nt-week-temps" style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;opacity:0.4;width:3rem;text-align:right;">15°</span>
                             <div style="width:2rem;height:2px;background:rgba(0,0,0,0.2);"></div>
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;width:3rem;text-align:right;">24°</span>
                         </div>
                     </div>
                     
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                        <span style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Пт</span>
+                    <div class="nt-week-row" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                        <span class="nt-week-day" style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Пт</span>
                         <div style="flex:1;display:flex;justify-content:center;">
                             <i data-lucide="cloud-lightning" style="width:1.5rem;height:1.5rem;opacity:0.5;" stroke-width="1.5"></i>
                         </div>
-                        <div style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
+                        <div class="nt-week-temps" style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;opacity:0.4;width:3rem;text-align:right;">17°</span>
                             <div style="width:2rem;height:2px;background:rgba(0,0,0,0.2);"></div>
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;width:3rem;text-align:right;">25°</span>
                         </div>
                     </div>
                     
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
-                        <span style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Сб</span>
+                    <div class="nt-week-row" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+                        <span class="nt-week-day" style="width:5rem;font-weight:700;font-size:13px;letter-spacing:0.1em;font-family:'Space Mono',monospace;">Сб</span>
                         <div style="flex:1;display:flex;justify-content:center;">
                             <i data-lucide="sun" style="width:1.5rem;height:1.5rem;opacity:0.5;" stroke-width="1.5"></i>
                         </div>
-                        <div style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
+                        <div class="nt-week-temps" style="width:8rem;display:flex;justify-content:flex-end;align-items:center;gap:0.75rem;">
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;opacity:0.4;width:3rem;text-align:right;">16°</span>
                             <div style="width:2rem;height:2px;background:rgba(0,0,0,0.2);"></div>
                             <span style="font-family:'VT323',monospace;font-size:1.5rem;width:3rem;text-align:right;">27°</span>
