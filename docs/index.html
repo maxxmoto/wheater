@@ -1,9 +1,16 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" prefix="og: https://ogp.me/ns#">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Погода - Москва</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0">
+    <title>Погода в Москва — текущая температура, прогноз на 8 дней, магнитное поле</title>
+    <meta name="description" content="Точный прогноз погоды в Москва. Температура воздуха, осадки, ветер, влажность, УФ-индекс, магнитное поле. Почасовой прогноз на 24 часа и на 8 дней. Давление с учётом высоты над уровнем моря.">
+    <meta name="keywords" content="погода Москва, прогноз погоды, температура, осадки, ветер, магнитное поле, атмосферное давление, метеозависимость">
+    <meta name="robots" content="index,follow">
+    <meta name="author" content="Weather PWA">
+    <meta name="language" content="ru">
+
+    <link rel="canonical" href="https://maxxmoto.github.io/wheater/">
     <link rel="icon" type="image/png" sizes="16x16" href="static/favicons/icons8-погода-ios-27-filled-16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="static/favicons/icons8-погода-ios-27-filled-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="static/favicons/icons8-погода-ios-27-filled-192.png">
@@ -11,6 +18,35 @@
     <link rel="manifest" href="static/manifest.json">
     <meta name="theme-color" content="#2563EB">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Погода">
+    <meta name="format-detection" content="telephone=no">
+
+    <meta property="og:title" content="Погода в Москва — текущая температура 24°C">
+    <meta property="og:description" content="Прогноз погоды в Москва: Преимущественно солнечно, 24°C. Ветер 4.2 м/с, влажность 45%.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maxxmoto.github.io/wheater/">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:site_name" content="Погода">
+    <meta property="og:image" content="https://maxxmoto.github.io/wheater/static/favicons/icons8-погода-ios-27-filled-192.png">
+    <meta property="og:image:width" content="192">
+    <meta property="og:image:height" content="192">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Погода в Москва — 24°C">
+    <meta name="twitter:description" content="Преимущественно солнечно. Ветер 4.2 м/с, влажность 45%.">
+    <meta name="twitter:image" content="https://maxxmoto.github.io/wheater/static/favicons/icons8-погода-ios-27-filled-192.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Погода",
+      "url": "https://maxxmoto.github.io/wheater/",
+      "description": "Прогноз погоды с магнитным полем, давлением и детальным прогнозом по времени суток"
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
