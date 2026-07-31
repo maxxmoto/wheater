@@ -931,8 +931,16 @@ function getTourCity(){
 }
 
 function openTour(){
-    var c = getTourCity();
+    var c = getTourCity().replace(/городской округ\s*/gi,'').replace(/г\.о\.\s*/gi,'').trim();
     var t = TOURS[c];
+    if(!t){
+        var lower = c.toLowerCase();
+        if(lower.indexOf('казан')>=0) t = TOURS['Казань'];
+        else if(lower.indexOf('москв')>=0) t = TOURS['Москва'];
+        else if(lower.indexOf('петербург')>=0 || lower.indexOf('питер')>=0 || lower.indexOf('санкт')>=0) t = TOURS['Санкт-Петербург'];
+        else if(lower.indexOf('йошкар')>=0) t = TOURS['Йошкар-Ола'];
+        else if(lower.indexOf('нижн')>=0 && lower.indexOf('новгород')>=0) t = TOURS['Нижний Новгород'];
+    }
     if(!t){ alert('Экскурсия доступна для Москвы, Петербурга, Казани и Йошкар-Олы.'); return; }
     document.getElementById('tour-overlay').style.display='block';
     document.getElementById('tour-hero').style.backgroundImage='url('+t.hero+')';
