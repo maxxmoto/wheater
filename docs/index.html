@@ -863,6 +863,13 @@ body.theme-nothing input { border-radius:0!important; }
     </script>
     <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('static/sw.js');</script>
 
+<style>
+.ai-dot{display:inline-block;width:6px;height:6px;margin:0 1.5px;border-radius:50%;background:#6B7280;animation:ai-bounce 1.2s infinite ease-in-out;}
+.ai-dot:nth-child(1){animation-delay:0s;}
+.ai-dot:nth-child(2){animation-delay:0.2s;}
+.ai-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes ai-bounce{0%,60%,100%{transform:translateY(0);opacity:0.5;}30%{transform:translateY(-5px);opacity:1;}}
+</style>
 <button id="ai-btn" onclick="toggleChat()" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;width:3.5rem;height:3.5rem;border-radius:50%;border:2px solid var(--card-border,#000);background:var(--card-bg,#fff);box-shadow:var(--card-shadow,4px 4px 0 0 #000);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text,#111);transition:transform 0.15s;">
     <i data-lucide="message-circle" style="width:1.5rem;height:1.5rem;color:var(--accent,#2563EB);"></i>
 </button>
@@ -925,7 +932,8 @@ function addMsg(text, who){
 function typing(){
     var box=document.getElementById('ai-msgs');
     var d=document.createElement('div');d.id='ai-typing';d.style.cssText='align-self:flex-start;padding:0.6rem 0.9rem;border-radius:12px;font-size:13px;background:rgba(0,0,0,0.06);color:var(--text,#111);';
-    d.textContent='...';box.appendChild(d);box.scrollTop=box.scrollHeight;
+    d.innerHTML='<span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span>';
+    box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function reply(text){var t=document.getElementById('ai-typing');if(t)t.remove();addMsg(text,'ai');}
 
