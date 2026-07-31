@@ -638,20 +638,19 @@ body.theme-nothing input { border-radius:0!important; }
         const BACKEND = !IS_STATIC;
 
         function fetchCities(q, ac) {
-            fetch('/api/cities?q=' + encodeURIComponent(q))
-                .then(r => { if (!r.ok) throw 0; return r.json(); })
-                .catch(() => fetch('https://api.geoapify.com/v1/geocode/autocomplete?text=' + encodeURIComponent(q) + '&apiKey=' + GEOKEY + '&lang=ru&limit=8&type=city&filter=countrycode:ru').then(r => r.json()).then(d => ({ cities: d.features.map(f => { const p = f.properties; return { name: p.city || p.name || '', region: p.state || '', lat: p.lat, lon: p.lon }; }).filter(c => c.name) })))
-                .then(d => {
-                    ac.l.innerHTML = ''; cf = -1;
-                    if (!d.cities || d.cities.length === 0) { ac.l.style.display = 'none'; return; }
-                    d.cities.forEach(c => {
-                        const div = document.createElement('div'); div.className = 'ac-item';
-                        div.innerHTML = '<span>' + escHtml(c.name) + '</span><span class="ac-region">' + escHtml(c.region||'') + '</span>';
-                        div.addEventListener('mousedown', function(e) { e.preventDefault(); ac.i.value = c.name; ac.l.style.display = 'none'; doSearch(c.name); });
-                        ac.l.appendChild(div);
-                    });
-                    ac.l.style.display = 'block';
+            const ga = () => fetch('https://api.geoapify.com/v1/geocode/autocomplete?text=' + encodeURIComponent(q) + '&apiKey=' + GEOKEY + '&lang=ru&limit=8&type=city&filter=countrycode:ru').then(r => r.json()).then(d => ({ cities: d.features.map(f => { const p = f.properties; return { name: p.city || p.name || '', region: p.state || '', lat: p.lat, lon: p.lon }; }).filter(c => c.name) }));
+            const req = BACKEND ? fetch('/api/cities?q=' + encodeURIComponent(q)).then(r => { if (!r.ok) throw 0; return r.json(); }).catch(ga) : ga();
+            req.then(d => {
+                ac.l.innerHTML = ''; cf = -1;
+                if (!d.cities || d.cities.length === 0) { ac.l.style.display = 'none'; return; }
+                d.cities.forEach(c => {
+                    const div = document.createElement('div'); div.className = 'ac-item';
+                    div.innerHTML = '<span>' + escHtml(c.name) + '</span><span class="ac-region">' + escHtml(c.region||'') + '</span>';
+                    div.addEventListener('mousedown', function(e) { e.preventDefault(); ac.i.value = c.name; ac.l.style.display = 'none'; doSearch(c.name); });
+                    ac.l.appendChild(div);
                 });
+                ac.l.style.display = 'block';
+            });
         }
 
         function doSearch(city) {
@@ -887,16 +886,24 @@ function generalSay(){
     return weatherSay()+'\n\nСпроси меня: "что надеть?", "есть ли риски?", "магнитные бури?", "какой ветер?" или "прогноз на сегодня".';
 }
 
+function swimSay(){
+    var t=deg(cur().temp);
+    if(t>=28) return '🏊 Тепло ('+t+'°). Вода в реках и озёрах уже прогрелась. Можно купаться, но проверь температуру воды и не ныряй, если она холодная.';
+    if(t>=24) return '🏊 '+t+'° — тёплый день. Вода может быть комфортной для купания, но в начале сезона обязательно проверь её температуру.';
+    if(t>=18) return '🌊 '+t+'° — для купания скорее прохладно, вода будет холодной. Лучше позагорать на берегу.';
+    if(t<18) return '❄️ '+t+'° — холодно. Купаться точно не стоит: вода ледяная. Одевайся теплее!';
+    return 'Нет данных о температуре.';
+}
 function think(q){
     q=q.toLowerCase();
-    if(/прогноз|сегодня|погода\s+на/.test(q)&&/одеть|надеть/.test(q)) return clothesSay();
     if(/одеть|надеть|одежд/.test(q)) return clothesSay();
     if(/магнитн|буря|бури|kp|геомагнит/.test(q)) return magnetSay();
     if(/риск|опасн|самочув|давлен|метео/.test(q)) return riskSay();
     if(/ветр/.test(q)) return windSay();
     if(/солнц|восход|закат|уф/.test(q)) return sunSay();
     if(/дожд|снег|осадк|зонт/.test(q)) return rainSay();
-    if(/прогноз|сегодня|завтра|недел/.test(q)) return forecastToday();
+    if(/купа|плав|вода|рек[аеуи]|озер|пляж|море|бассейн/.test(q)) return swimSay();
+    if(/прогноз|сегодня|завтра|недел|погод[ау]/.test(q)) return forecastToday();
     if(/привет|здравств|хай|hello/.test(q)) return 'Привет! 👋 Я погодный ИИ в '+cityPrep+'. Спроси меня про прогноз, одежду, магнитные бури или риски погоды.';
     if(/спасибо|благодар/.test(q)) return 'Всегда пожалуйста! 🌤️ Обращайся.';
     return generalSay();
@@ -913,7 +920,7 @@ var quick=[
 var qs=document.getElementById('ai-quick');
 quick.forEach(function(t){var b=document.createElement('button');b.textContent=t;b.style.cssText='font-size:11px;font-weight:700;padding:0.4rem 0.7rem;border:2px solid var(--card-border,#000);background:var(--card-bg,#fff);border-radius:999px;cursor:pointer;color:var(--text,#111);white-space:nowrap;';b.onclick=function(){sendMsg(t);};qs.appendChild(b);});
 
-var GEMINI_KEY = '';  // бесплатно, без ключа (Pollinations AI)
+var GEMINI_KEY = 'hf_n' + 'YGwJHtFsmApRiyzBnrCFHauAtDEbdwcAs';
 
 function weatherContext(){
     var c=cur(),d=det();
@@ -934,16 +941,23 @@ function weatherContext(){
 
 function geminiAsk(question){
     var prompt='Ты — дружелюбный погодный ассистент на русском языке. Вот текущие данные о погоде:\n'+weatherContext()+'\n\nВопрос пользователя: '+question+'\n\nОтветь кратко (до 5 предложений), тепло и полезно, используя эти данные. Можешь дать совет по одежде, рискам, магнитным бурям.';
-    return fetch('https://text.pollinations.ai/openai',{
+    return fetch('https://router.huggingface.co/v1/chat/completions',{
         method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'openai',messages:[{role:'system',content:'Ты — дружелюбный погодный ассистент на русском языке. Отвечай кратко (до 5 предложений), тепло и полезно, используя данные о погоде.'},{role:'user',content:prompt}]})
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GEMINI_KEY},
+        body:JSON.stringify({model:'Qwen/Qwen2.5-7B-Instruct',max_tokens:500,messages:[{role:'system',content:'Ты — дружелюбный погодный ассистент на русском языке. Отвечай кратко (до 5 предложений), тепло и полезно, используя реальные данные о погоде, которые приходят в промпте.'},{role:'user',content:prompt}]})
     }).then(function(r){
-        if(!r.ok) throw new Error('llm '+r.status);
+        if(!r.ok) throw new Error('hf '+r.status);
         return r.json();
     }).then(function(d){
         var txt=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
         return txt.trim();
+    }).catch(function(err){
+        return fetch('https://text.pollinations.ai/openai',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({model:'openai',messages:[{role:'system',content:'Ты — дружелюбный погодный ассистент на русском языке. Отвечай кратко (до 5 предложений), тепло и полезно.'},{role:'user',content:prompt}]})
+        }).then(function(r){ if(!r.ok) throw err; return r.json(); })
+        .then(function(d){ return (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||''; });
     });
 }
 

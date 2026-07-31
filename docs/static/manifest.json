@@ -2,12 +2,13 @@
   "name": "Погода",
   "short_name": "Погода",
   "description": "Прогноз погоды с магнитным полем, давлением и детальным прогнозом",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#E2F0FF",
   "theme_color": "#2563EB",
   "icons": [
-    { "src": "/static/favicons/icons8-погода-ios-27-filled-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/static/favicons/icons8-погода-ios-27-filled-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "favicons/icons8-погода-ios-27-filled-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "favicons/icons8-погода-ios-27-filled-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
