@@ -1009,16 +1009,22 @@ var cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
         if(!v) return;
         v.playsInline = true;
         v.muted = true;
-        v.loop = false;
         v.src = src;
-        v.addEventListener('loadedmetadata',function(){
+        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if(isSafari){
+            v.loop = false;
+            v.addEventListener('loadedmetadata',function(){ v.playbackRate = 1; v.play().catch(function(){}); });
+            v.addEventListener('timeupdate',function(){
+                if(v.playbackRate > 0 && v.duration && v.currentTime >= v.duration - 0.15){ v.playbackRate = -1; }
+                if(v.playbackRate < 0 && v.currentTime <= 0.15){ v.playbackRate = 1; }
+            });
+        } else {
+            v.loop = true;
+            v.addEventListener('timeupdate',function(){
+                if(v.duration && v.currentTime >= v.duration - 0.05) v.currentTime = 0;
+            });
             v.play().catch(function(){});
-        });
-        v.addEventListener('timeupdate',function(){
-            if(v.duration && v.currentTime >= v.duration - 0.1){
-                v.currentTime = 0;
-            }
-        });
+        }
         var retry = function(){ v.play().catch(function(){}); };
         document.addEventListener('touchstart',retry,{once:true});
         document.addEventListener('click',retry,{once:true});
