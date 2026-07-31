@@ -1037,8 +1037,7 @@ var quick=[
 var qs=document.getElementById('ai-quick');
 quick.forEach(function(t){var b=document.createElement('button');b.textContent=t;b.style.cssText='font-size:11px;font-weight:700;padding:0.4rem 0.7rem;border:2px solid var(--card-border,#000);background:var(--card-bg,#fff);border-radius:999px;cursor:pointer;color:var(--text,#111);white-space:nowrap;';b.onclick=function(){sendMsg(t);};qs.appendChild(b);});
 
-var GEMINI_KEY = 'sk-f606985194734322bb3abeb4ac063e8e';  // DeepSeek (OpenAI-совместимый)
-var GEMINI_MODEL = 'deepseek-chat';
+var GEMINI_KEY = '';  // бесплатно, без ключа (Pollinations AI)
 
 function weatherContext(){
     var c=cur(),d=det();
@@ -1059,10 +1058,10 @@ function weatherContext(){
 
 function geminiAsk(question){
     var prompt='Ты — дружелюбный погодный ассистент на русском языке. Вот текущие данные о погоде:\n'+weatherContext()+'\n\nВопрос пользователя: '+question+'\n\nОтветь кратко (до 5 предложений), тепло и полезно, используя эти данные. Можешь дать совет по одежде, рискам, магнитным бурям.';
-    return fetch('https://api.deepseek.com/chat/completions',{
+    return fetch('https://text.pollinations.ai/openai',{
         method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GEMINI_KEY},
-        body:JSON.stringify({model:GEMINI_MODEL,messages:[{role:'system',content:'Ты — дружелюбный погодный ассистент на русском языке. Отвечай кратко (до 5 предложений), тепло и полезно, используя данные о погоде.'},{role:'user',content:prompt}]})
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({model:'openai',messages:[{role:'system',content:'Ты — дружелюбный погодный ассистент на русском языке. Отвечай кратко (до 5 предложений), тепло и полезно, используя данные о погоде.'},{role:'user',content:prompt}]})
     }).then(function(r){
         if(!r.ok) throw new Error('llm '+r.status);
         return r.json();
@@ -1075,15 +1074,11 @@ function geminiAsk(question){
 function sendMsg(text){
     addMsg(text,'user');
     typing();
-    if(GEMINI_KEY){
-        geminiAsk(text).then(function(ans){
-            reply(ans||'Не смог ответить. Попробуй иначе.');
-        }).catch(function(){
-            reply(think(text));
-        });
-    } else {
-        setTimeout(function(){reply(think(text));},600);
-    }
+    geminiAsk(text).then(function(ans){
+        reply(ans||'Не смог ответить. Попробуй иначе.');
+    }).catch(function(){
+        reply(think(text));
+    });
 }
 document.getElementById('ai-form').addEventListener('submit',function(e){
     e.preventDefault();
