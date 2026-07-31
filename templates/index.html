@@ -785,7 +785,7 @@ var TOURS = {
         ]
     },
     'Санкт-Петербург':{
-        hero:'https://images.unsplash.com/photo-1556610961-2c6b02e29d2b?w=800&q=80',
+        hero:'static/spb_bg.jpg',
         title:'Санкт-Петербург',
         subtitle:'Северная столица · основан в 1703 году · 5.6 млн жителей',
         timeline:[
@@ -825,16 +825,32 @@ var TOURS = {
 };
 
 (function initTour(){
-    var cityRaw = (function(){try{var d=JSON.parse(document.getElementById('weather-data').textContent||'{}');return(d.current&&d.current.city)?d.current.city.split(',')[0].trim():'';}catch(e){return'';}})();
-    if(TOURS[cityRaw]){
+    var c = getTourCity();
+    if(TOURS[c]){
         document.getElementById('tour-section').style.display='block';
-        document.getElementById('tour-city-name').textContent=cityRaw;
+        document.getElementById('tour-city-name').textContent=c;
+    }
+})();
+
+function getTourCity(){
+    var el = document.getElementById('g-city');
+    if(el && el.textContent) return el.textContent.split(',')[0].trim();
+    el = document.getElementById('n-city');
+    if(el && el.textContent) return el.textContent.split(',')[0].trim();
+    try{var d=JSON.parse(document.getElementById('weather-data').textContent||'{}');return(d.current&&d.current.city)?d.current.city.split(',')[0].trim():'';}catch(e){return'';}
+}
+
+(function initTour(){
+    var c = getTourCity();
+    if(TOURS[c]){
+        document.getElementById('tour-section').style.display='block';
+        document.getElementById('tour-city-name').textContent=c;
     }
 })();
 
 function openTour(){
-    var cityRaw = (function(){try{var d=JSON.parse(document.getElementById('weather-data').textContent||'{}');return(d.current&&d.current.city)?d.current.city.split(',')[0].trim():'';}catch(e){return'';}})();
-    var t = TOURS[cityRaw]; if(!t) return;
+    var c = getTourCity();
+    var t = TOURS[c]; if(!t) return;
     document.getElementById('tour-overlay').style.display='block';
     document.getElementById('tour-hero').style.backgroundImage='url('+t.hero+')';
     document.getElementById('tour-title').textContent=t.title;
@@ -848,9 +864,21 @@ function openTour(){
 
     var lm=document.getElementById('tour-landmarks');
     lm.innerHTML='';
-    t.landmarks.forEach(function(l){
-        lm.innerHTML+='<div style="border-radius:16px;overflow:hidden;border:1px solid #f3f4f6;"><div style="height:120px;background-size:cover;background-position:center;background-image:url('+l.img+');"></div><div style="padding:0.75rem;"><div style="font-weight:700;font-size:14px;color:#111;margin-bottom:0.25rem;">'+l.title+'</div><div style="font-size:12px;color:#6B7280;line-height:1.4;">'+l.desc+'</div></div></div>';
-    });
+    if(c==='Санкт-Петербург'){
+        lm.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;';
+        var imgs=['static/spb1.jpg','static/spb2.jpg','static/spb3.jpg'];
+        var titles=['Разводные мосты','Казанский собор','Стрелка Васильевского острова'];
+        var descs=['Визитная карточка Петербурга. Дворцовый, Троицкий, Благовещенский — каждый мост — произведение инженерного искусства, разводится по ночам под музыку.','Главный собор Невского проспекта. Колоннада из 96 колонн, построен в 1811 году Воронихиным. Архитектурный шедевр русского классицизма.','Мыс Васильевского острова с Ростральными колоннами. Отсюда открывается панорама на Неву, Петропавловскую крепость и Эрмитаж.'];
+        var rots=['-3deg','2deg','-1deg'];
+        imgs.forEach(function(src,i){
+            lm.innerHTML+='<div style="width:200px;background:#fff;padding:12px 12px 40px;box-shadow:0 8px 24px rgba(0,0,0,0.12);transform:rotate('+rots[i]+');border:1px solid #e5e5e5;"><img src="'+src+'" style="width:100%;border-radius:4px;display:block;"><div style="font-family:Georgia,serif;font-style:italic;font-size:11px;color:#6B7280;text-align:center;margin-top:8px;">'+titles[i]+'</div></div>';
+        });
+    } else {
+        lm.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:1rem;';
+        t.landmarks.forEach(function(l){
+            lm.innerHTML+='<div style="border-radius:16px;overflow:hidden;border:1px solid #f3f4f6;"><div style="height:120px;background-size:cover;background-position:center;background-image:url('+l.img+');"></div><div style="padding:0.75rem;"><div style="font-weight:700;font-size:14px;color:#111;margin-bottom:0.25rem;">'+l.title+'</div><div style="font-size:12px;color:#6B7280;line-height:1.4;">'+l.desc+'</div></div></div>';
+        });
+    }
 
     document.body.style.overflow='hidden';
 }
