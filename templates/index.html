@@ -441,9 +441,11 @@
         {% endif %}
     </main>
 
+    <!--
     <div class="ad-side ad-left"><video id="ad-video-l" muted playsinline preload="auto" src="static/ad.mp4"></video></div>
     <div class="ad-side ad-right"><video id="ad-video-r" muted playsinline preload="auto" src="static/ad2.mp4"></video></div>
     <div class="ad-mobile"><video id="ad-video-m1" muted playsinline preload="auto" src="static/ad.mp4"></video><video id="ad-video-m2" muted playsinline preload="auto" src="static/ad2.mp4"></video></div>
+    -->
 
 </div>
     <style>
@@ -1090,6 +1092,7 @@ function setupVideo(){
 setupVideo();
 window.setupVideo = setupVideo;
 
+/*
 (function(){
     ['ad-video-l','ad-video-r','ad-video-m1','ad-video-m2'].forEach(function(id){
         var ad = document.getElementById(id);
@@ -1099,6 +1102,7 @@ window.setupVideo = setupVideo;
         }
     });
 })();
+*/
 
 function declineCity(name){
     if(!name) return name;
