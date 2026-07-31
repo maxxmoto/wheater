@@ -837,6 +837,13 @@ body.theme-nothing input { border-radius:0!important; }
 
         function renderOpenMeteo(w, cityName) {
             const c = w.current, d = w.daily;
+            var cleanCity = cityName.split(',')[0].replace('Городской округ ','').trim();
+            WDATA.current = { city: cleanCity, temp: Math.round(c.temperature_2m), condition: WMO_TEXT[c.weather_code] || 'Неизвестно', high: Math.round(d.temperature_2m_max[0]), low: Math.round(d.temperature_2m_min[0]) };
+            WDATA.details = { wind: { speed: (c.wind_speed_10m/3.6).toFixed(1), direction: '', gust: 0 }, humidity: c.relative_humidity_2m, feelsLike: Math.round(c.apparent_temperature), visibility: 10, uvIndex: {value:0,level:'',description:''}, sunrise:'', sunset:'', pressure: {value:760,norm:760,diff:0} };
+            WDATA.daily = [{ day: 'Сегодня', low: Math.round(d.temperature_2m_min[0]), high: Math.round(d.temperature_2m_max[0]), precip: 0, icon: WMO[c.weather_code] || 'cloud' }];
+            WDATA.weekMin = Math.round(Math.min.apply(null,d.temperature_2m_min));
+            WDATA.weekMax = Math.round(Math.max.apply(null,d.temperature_2m_max));
+            cityRaw = cleanCity; city = cleanCity; cityPrep = declineCity(cleanCity);
             const cond = WMO_TEXT[c.weather_code] || 'Неизвестно';
             const icon = WMO[c.weather_code] || 'cloud';
             const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -1120,11 +1127,11 @@ function closeTour(){
 
 <script>
 (function(){
-var WDATA = {};
+WDATA = {};
 try { WDATA = JSON.parse(document.getElementById('weather-data').textContent || '{}'); } catch(e) {}
-var cityRaw = (WDATA.current && WDATA.current.city) ? WDATA.current.city.split(',')[0] : '';
-var city = cityRaw ? cityRaw : 'этом городе';
-var cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
+cityRaw = (WDATA.current && WDATA.current.city) ? WDATA.current.city.split(',')[0] : '';
+city = cityRaw ? cityRaw : 'этом городе';
+cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
 
 (function setupVideo(){
     var c = cur();
