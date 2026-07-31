@@ -776,7 +776,19 @@ body.theme-nothing input { border-radius:0!important; }
         const BACKEND = !IS_STATIC;
 
         function fetchCities(q, ac) {
-            const ga = () => fetch('https://api.geoapify.com/v1/geocode/autocomplete?text=' + encodeURIComponent(q) + '&apiKey=' + GEOKEY + '&lang=ru&limit=8&type=city&filter=countrycode:ru').then(r => r.json()).then(d => ({ cities: d.features.map(f => { const p = f.properties; return { name: p.city || p.name || '', region: p.state || '', lat: p.lat, lon: p.lon }; }).filter(c => c.name) }));
+            const ga = () => fetch('https://api.geoapify.com/v1/geocode/autocomplete?text=' + encodeURIComponent(q) + '&apiKey=' + GEOKEY + '&lang=ru&limit=10&type=city&filter=countrycode:ru').then(r => r.json()).then(d => {
+                var seen = {}, unique = [];
+                (d.features||[]).forEach(function(f){
+                    var p = f.properties;
+                    var name = p.city || p.name || '';
+                    if(!name || name.indexOf('Городской округ') >= 0 || name.indexOf('район') >= 0) return;
+                    var key = name.toLowerCase();
+                    if(seen[key]) return;
+                    seen[key] = 1;
+                    unique.push({ name: name, region: p.state || p.county || '', lat: p.lat, lon: p.lon });
+                });
+                return { cities: unique };
+            });
             const req = BACKEND ? fetch('/api/cities?q=' + encodeURIComponent(q)).then(r => { if (!r.ok) throw 0; return r.json(); }).catch(ga) : ga();
             req.then(d => {
                 ac.l.innerHTML = ''; cf = -1;
@@ -881,7 +893,7 @@ body.theme-nothing input { border-radius:0!important; }
         function autoDetectCity(){
             if(BACKEND && location.search.indexOf('city=') >= 0) return;
             if(location.search.indexOf('city=') >= 0) return;
-            fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){
+            fetch('https://ip-api.com/json/?fields=city,country').then(function(r){return r.json();}).then(function(d){
                 if(d.city && d.city !== 'Москва') doSearch(d.city);
             }).catch(function(){});
         }
@@ -1132,16 +1144,11 @@ var cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
         v.loop = false;
         v.src = src;
         v.addEventListener('loadedmetadata',function(){
-            v.play().then(function(){
-                v.playbackRate = 1;
-            });
+            v.play().catch(function(){});
         });
         v.addEventListener('timeupdate',function(){
-            if(v.playbackRate > 0 && v.duration && v.currentTime >= v.duration - 0.15){
-                v.playbackRate = -1;
-            }
-            if(v.playbackRate < 0 && v.currentTime <= 0.15){
-                v.playbackRate = 1;
+            if(v.duration && v.currentTime >= v.duration - 0.1){
+                v.currentTime = 0;
             }
         });
         var retry = function(){ v.play().catch(function(){}); };
