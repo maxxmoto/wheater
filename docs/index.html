@@ -803,7 +803,7 @@ body.theme-nothing input { border-radius:0!important; }
                     if (!g.features || !g.features.length) { alert('Город не найден'); hideLoading(); return; }
                     const p = g.features[0].properties;
                     const lat = p.lat, lon = p.lon;
-                    const cityName = (p.city || p.name) + (p.country ? ', ' + p.country : '');
+                    const cityName = ((p.city || p.name) + (p.country ? ', ' + p.country : '')).replace(', Россия','').replace(', Russia','').trim();
                     return fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto').then(r => r.json()).then(w => ({ w, cityName }));
                 })
                 .then(({ w, cityName }) => renderOpenMeteo(w, cityName))
@@ -1129,17 +1129,24 @@ var cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
         if(!v) return;
         v.playsInline = true;
         v.muted = true;
-        v.loop = true;
+        v.loop = false;
         v.src = src;
-        v.load();
-        var p = v.play();
-        if(p && p.catch) p.catch(function(e){
-            if(e.name==='NotAllowedError'){
-                var retry = function(){ v.play().catch(function(){}); };
-                document.addEventListener('touchstart',retry,{once:true});
-                document.addEventListener('click',retry,{once:true});
+        v.addEventListener('loadedmetadata',function(){
+            v.play().then(function(){
+                v.playbackRate = 1;
+            });
+        });
+        v.addEventListener('timeupdate',function(){
+            if(v.playbackRate > 0 && v.duration && v.currentTime >= v.duration - 0.15){
+                v.playbackRate = -1;
+            }
+            if(v.playbackRate < 0 && v.currentTime <= 0.15){
+                v.playbackRate = 1;
             }
         });
+        var retry = function(){ v.play().catch(function(){}); };
+        document.addEventListener('touchstart',retry,{once:true});
+        document.addEventListener('click',retry,{once:true});
     });
 })();
 

@@ -64,7 +64,9 @@ def geocode(city):
             elevation = elev_resp.json()['results'][0]['elevation']
     except Exception:
         pass
-    return lat, lon, elevation, f'{city_name}, {country}' if country else city_name, None
+    label = f'{city_name}, {country}' if country else city_name
+    label = label.replace(', Россия','').replace(', Russia','').strip()
+    return lat, lon, elevation, label, None
 
 
 def get_icon(code, is_day):
