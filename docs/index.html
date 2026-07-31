@@ -1056,27 +1056,69 @@ var GEMINI_KEY = 'hf_n' + 'YGwJHtFsmApRiyzBnrCFHauAtDEbdwcAs';
 
 function weatherContext(){
     var c=cur(),d=det();
-    var ctx=['ДАННЫЕ ТОЛЬКО ДЛЯ ГОРОДА: '+(c.city||city)+'. Ты НЕ знаешь погоду в других городах. Если спрашивают про другой город — скажи: поищите его в поиске сверху, а потом возвращайтесь в чат.'];
-    ctx.push('Температура сейчас: '+deg(c.temp)+'°C, ощущается как '+deg(d.feelsLike)+'°C.');
-    ctx.push('Макс/мин сегодня: '+deg(c.high)+'°C / '+deg(c.low)+'°C.');
-    ctx.push('Состояние: '+(c.condition||'—')+'.');
-    if(d.wind&&d.wind.speed) ctx.push('Ветер: '+(d.wind.direction||'')+' '+d.wind.speed+' м/с.');
-    if(d.humidity) ctx.push('Влажность: '+d.humidity+'%.');
-    if(d.sunrise) ctx.push('Восход: '+d.sunrise+', закат: '+d.sunset+'.');
-    if(d.uvIndex) ctx.push('УФ-индекс: '+d.uvIndex.value+' ('+d.uvIndex.level+').');
-    if(d.pressure){var p=d.pressure;ctx.push('Давление: '+deg(p.value)+' мм рт.ст. (норма '+deg(p.norm)+' мм)');if(p.warning)ctx.push('Предупреждение: '+p.warning);}
-    if(d.magnetic) ctx.push('Магнитное поле: Kp '+d.magnetic.value+' — '+d.magnetic.status+'.');
+    var ctx=[];
+    ctx.push('═══ РЕАЛЬНАЯ ПОГОДА ПРЯМО СЕЙЧАС ═══');
+    ctx.push('Город: '+(c.city||city)+'  |  Температура: '+deg(c.temp)+'°C (ощущается как '+deg(d.feelsLike)+'°C)');
+    ctx.push('Сегодня: от '+deg(c.low)+'°C до '+deg(c.high)+'°C');
+    ctx.push('За окном: '+(c.condition||'неизвестно'));
+    if(d.wind&&d.wind.speed) ctx.push('Ветер: '+d.wind.direction+' '+d.wind.speed+' м/с'+(d.wind.gust>0?', порывы до '+d.wind.gust+' м/с':''));
+    if(d.humidity) ctx.push('Влажность: '+d.humidity+'%');
+    if(d.visibility) ctx.push('Видимость: '+d.visibility+' км');
+    if(d.sunrise) ctx.push('Солнце: восход '+d.sunrise+' / закат '+d.sunset);
+    if(d.uvIndex) ctx.push('УФ-индекс: '+d.uvIndex.value+' из 11 — '+d.uvIndex.level);
+    if(d.pressure){var p=d.pressure;ctx.push('Давление: '+deg(p.value)+' мм рт.ст. (норма для этой высоты — '+deg(p.norm)+' мм). Отклонение: '+(p.diff>0?'выше нормы':'ниже нормы')+' на '+Math.abs(Math.round(p.diff))+' мм');if(p.warning)ctx.push('⚠ ВНИМАНИЕ ПО ДАВЛЕНИЮ: '+p.warning);}
+    if(d.magnetic) ctx.push('Магнитное поле: Kp-индекс '+d.magnetic.value+' из 9 — '+d.magnetic.status);
     var daily=WDATA.daily||[];
-    if(daily.length){var day=daily[0];ctx.push('Сегодня: от '+day.low+'° до '+day.high+'°, шанс осадков '+(day.precip||0)+'%.');}
+    if(daily.length){
+        var today=daily[0];
+        ctx.push('Прогноз на сегодня: от '+today.low+'° до '+today.high+'°, осадки: '+(today.precip>0?'да ('+today.precip+'%)':'нет'));
+        if(daily.length>1) ctx.push('Завтра: от '+daily[1].low+'° до '+daily[1].high+'°, осадки: '+(daily[1].precip>0?'да ('+daily[1].precip+'%)':'нет'));
+    }
     return ctx.join('\n');
 }
 
 function geminiAsk(question){
-    var prompt='Ты — дружелюбный погодный ассистент на русском языке. Вот текущие данные о погоде:\n'+weatherContext()+'\n\nВопрос пользователя: '+question+'\n\nОтветь кратко (до 5 предложений), тепло и полезно, используя эти данные. Можешь дать совет по одежде, рискам, магнитным бурям.';
+    var systemPrompt = [
+        'Ты — профессиональный погодный ассистент с искусственным интеллектом. Твоя задача — помогать людям разобраться в погоде, давать точные и полезные советы на основе РЕАЛЬНЫХ метеоданных, которые приходят ниже.',
+        '',
+        '== ТВОЯ ЛИЧНОСТЬ ==',
+        '- Ты дружелюбный, заботливый, говоришь по-русски тепло и по-человечески',
+        '- Ты НЕ врач, но можешь напомнить про метеозависимость и предупредить о рисках',
+        '- Ты НЕ спасатель, но можешь дать разумные советы по безопасности при плохой погоде',
+        '- Ты используешь эмодзи для настроения (☀️🌧️💨🧲⚠️), но не перебарщивай',
+        '- Отвечай КРАТКО: 3-5 предложений, по делу',
+        '',
+        '== ПРАВИЛА ==',
+        '1. ВСЕГДА опирайся на реальные данные из контекста. Никогда не выдумывай температуру или погоду.',
+        '2. Данные ТОЛЬКО для одного города (указан в контексте). Если спрашивают про другой город — вежливо скажи: «Я знаю погоду только для [текущий город]. Чтобы узнать про другой — найдите его через поиск вверху страницы и задайте вопрос снова.»',
+        '3. Если данных не хватает для точного ответа — честно скажи, что не знаешь.',
+        '4. При опасных условиях (сильный ветер, магнитная буря, скачки давления) — предупреди.',
+        '5. Не давай медицинских диагнозов. Вместо «у вас мигрень» скажи «при магнитных бурях возможны головные боли».',
+        '',
+        '== ЧТО НУЖНО ДЕЛАТЬ ==',
+        '- Если спрашивают про ОДЕЖДУ — советуй по температуре: жарко (+25°+) → лёгкое, тепло (+18-25°) → комфортное, прохладно (+10-18°) → кофта/куртка, холодно (+0-10°) → тёплая куртка, мороз (−0°) → зимняя одежда',
+        '- Если спрашивают про ПРОГУЛКУ/АКТИВНОСТИ — оценивай ветер, осадки, УФ',
+        '- Если спрашивают про ЗДОРОВЬЕ/САМОЧУВСТВИЕ — анализируй давление и магнитное поле',
+        '- Если спрашивают про ОСАДКИ — говори про зонт и вероятность',
+        '- Если спрашивают про КУПАНИЕ/ВОДУ — +25°+ можно, +18-25° прохладно, ниже 18° — не стоит',
+        '',
+        '== ФОРМАТ ОТВЕТА ==',
+        '- Начинай с краткого итога (1 предложение)',
+        '- Потом 2-3 предложения с деталями/советом',
+        '- В конце — эмодзи по настроению погоды',
+        '- НЕ пиши «по данным которые вы предоставили» или «согласно контексту» — просто отвечай естественно',
+        '',
+        '== ТОНКОСТИ ==',
+        '- Если давление сильно отклоняется от нормы (>10 мм) — упомяни, что метеозависимым стоит быть внимательнее',
+        '- Если Kp магнитного поля >4 — предупреди про возможные головные боли и усталость',
+        '- Если УФ >5 — напомни про защиту от солнца',
+        '- Если ветер >10 м/с — предупреди про опасность',
+        '- Если температура комфортная и без осадков — предложи прогулку или активность'
+    ].join('\n');
     return fetch('https://router.huggingface.co/v1/chat/completions',{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+GEMINI_KEY},
-        body:JSON.stringify({model:'Qwen/Qwen2.5-7B-Instruct',max_tokens:500,messages:[{role:'system',content:'Ты — дружелюбный погодный ассистент на русском языке. Отвечай кратко (до 5 предложений), тепло и полезно, используя реальные данные о погоде, которые приходят в промпте.'},{role:'user',content:prompt}]})
+        body:JSON.stringify({model:'Qwen/Qwen2.5-7B-Instruct',max_tokens:500,messages:[{role:'system',content:systemPrompt},{role:'user',content:weatherContext()+'\n\nВОПРОС: '+question}]})
     }).then(function(r){
         if(!r.ok) throw new Error('hf '+r.status);
         return r.json();
@@ -1085,9 +1127,8 @@ function geminiAsk(question){
         return txt.trim();
     }).catch(function(err){
         return fetch('https://text.pollinations.ai/openai',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({model:'openai',messages:[{role:'system',content:'Ты — дружелюбный погодный ассистент на русском языке. Отвечай кратко (до 5 предложений), тепло и полезно.'},{role:'user',content:prompt}]})
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({model:'openai',messages:[{role:'system',content:systemPrompt},{role:'user',content:weatherContext()+'\n\n'+question}]})
         }).then(function(r){ if(!r.ok) throw err; return r.json(); })
         .then(function(d){ return (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||''; });
     });
