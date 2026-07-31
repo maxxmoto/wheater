@@ -53,6 +53,7 @@ def geocode(city):
     lat = props['lat']
     lon = props['lon']
     city_name = props.get('city') or props.get('name', city)
+    city_name = city_name.replace('Городской округ ','').strip()
     country = props.get('country', '')
     elevation = 0
     try:

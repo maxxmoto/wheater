@@ -844,6 +844,7 @@ body.theme-nothing input { border-radius:0!important; }
             WDATA.weekMin = Math.round(Math.min.apply(null,d.temperature_2m_min));
             WDATA.weekMax = Math.round(Math.max.apply(null,d.temperature_2m_max));
             cityRaw = cleanCity; city = cleanCity; cityPrep = declineCity(cleanCity);
+            setupVideo();
             const cond = WMO_TEXT[c.weather_code] || 'Неизвестно';
             const icon = WMO[c.weather_code] || 'cloud';
             const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -1133,7 +1134,7 @@ cityRaw = (WDATA.current && WDATA.current.city) ? WDATA.current.city.split(',')[
 city = cityRaw ? cityRaw : 'этом городе';
 cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
 
-(function setupVideo(){
+function setupVideo(){
     var c = cur();
     var cond = String(c.condition || '').toLowerCase();
     var src = 'static/sun.mp4';
@@ -1167,7 +1168,8 @@ cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
         document.addEventListener('touchstart',retry,{once:true});
         document.addEventListener('click',retry,{once:true});
     });
-})();
+}
+setupVideo();
 
 function declineCity(name){
     if(!name) return name;
