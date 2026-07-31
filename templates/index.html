@@ -924,7 +924,7 @@ var GEMINI_KEY = 'hf_n' + 'YGwJHtFsmApRiyzBnrCFHauAtDEbdwcAs';
 
 function weatherContext(){
     var c=cur(),d=det();
-    var ctx=['Город: '+(c.city||city)];
+    var ctx=['ДАННЫЕ ТОЛЬКО ДЛЯ ГОРОДА: '+(c.city||city)+'. Ты НЕ знаешь погоду в других городах. Если спрашивают про другой город — скажи: поищите его в поиске сверху, а потом возвращайтесь в чат.'];
     ctx.push('Температура сейчас: '+deg(c.temp)+'°C, ощущается как '+deg(d.feelsLike)+'°C.');
     ctx.push('Макс/мин сегодня: '+deg(c.high)+'°C / '+deg(c.low)+'°C.');
     ctx.push('Состояние: '+(c.condition||'—')+'.');
