@@ -813,7 +813,7 @@ body.theme-nothing input { border-radius:0!important; }
             }
             showLoading();
             fetch('https://api.geoapify.com/v1/geocode/search?text=' + encodeURIComponent(city) + '&apiKey=' + GEOKEY + '&lang=ru&limit=1')
-                .then(r => r.json())
+                .then(r => { if(!r.ok) throw new Error('Geoapify '+r.status); return r.json(); })
                 .then(g => {
                     if (!g.features || !g.features.length) { alert('Город не найден'); hideLoading(); return; }
                     const p = g.features[0].properties;
@@ -822,7 +822,16 @@ body.theme-nothing input { border-radius:0!important; }
                     return fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto').then(r => r.json()).then(w => ({ w, cityName }));
                 })
                 .then(({ w, cityName }) => renderOpenMeteo(w, cityName))
-                .catch((e) => { alert('Ошибка загрузки погоды: ' + (e.message || e)); hideLoading(); });
+                .catch((e) => {
+                    fetch('https://api.weatherapi.com/v1/forecast.json?key=' + WAKEY + '&q=' + encodeURIComponent(city) + '&days=3&lang=ru&aqi=no&alerts=no')
+                        .then(r => r.json()).then(w => {
+                            var c = w.current, f = w.forecast.forecastday, lat = w.location.lat, lon = w.location.lon;
+                            renderOpenMeteo({
+                                current: { temperature_2m: c.temp_c, relative_humidity_2m: c.humidity, apparent_temperature: c.feelslike_c, weather_code: c.condition.code > 1000 ? 3 : c.is_day ? 0 : 1, wind_speed_10m: c.wind_kph / 3.6 },
+                                daily: { temperature_2m_max: [f[0].day.maxtemp_c], temperature_2m_min: [f[0].day.mintemp_c], weather_code: [f[0].day.condition.code > 1000 ? 3 : 0] }
+                            }, w.location.name + ', ' + w.location.country);
+                        }).catch(function(){ alert('Ошибка загрузки погоды. Попробуйте позже.'); hideLoading(); });
+                });
         }
 
         function showLoading() { const el = document.getElementById('g-loading'); if (el) { el.style.display = 'flex'; } }
