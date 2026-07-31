@@ -868,10 +868,130 @@ body.theme-nothing input { border-radius:0!important; }
     </script>
     <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('static/sw.js');</script>
 
-<div style="text-align:center;padding:1.5rem 1rem;max-width:64rem;margin:0 auto;">
+<div style="text-align:center;padding:0.5rem 1rem 1.5rem;max-width:64rem;margin:0 auto;">
     <span style="font-size:13px;color:#6B7280;">Нашли ошибку или не согласны с прогнозом? </span>
     <button onclick="document.getElementById('fb-overlay').style.display='flex'" style="background:none;border:none;color:#2563EB;cursor:pointer;font-weight:700;font-size:13px;text-decoration:underline;">Помогите нам стать лучше →</button>
 </div>
+<div id="tour-section" style="display:none;text-align:center;padding:0.5rem 1rem 1rem;max-width:64rem;margin:0 auto;">
+    <button onclick="openTour()" style="background:linear-gradient(135deg,#2563EB,#7C3AED);color:#fff;border:none;border-radius:16px;padding:0.85rem 2rem;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(37,99,235,0.3);transition:transform 0.2s;">🏛 Отправьтесь в онлайн-экскурсию по <span id="tour-city-name"></span></button>
+</div>
+
+<div id="tour-overlay" onclick="if(event.target===this)closeTour()" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.6);overflow-y:auto;padding:2rem 1rem;">
+<div style="max-width:720px;margin:0 auto;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.2);">
+    <div id="tour-hero" style="height:280px;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:2rem;">
+        <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border-radius:16px;padding:1rem 1.5rem;color:#fff;">
+            <div id="tour-title" style="font-size:2rem;font-weight:800;letter-spacing:-0.02em;"></div>
+            <div id="tour-subtitle" style="font-size:14px;opacity:0.9;margin-top:0.25rem;"></div>
+        </div>
+    </div>
+    <div style="padding:2rem;">
+        <div id="tour-timeline" style="margin-bottom:2rem;"></div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:1rem;color:#111;">Знаковые места</div>
+        <div id="tour-landmarks" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;"></div>
+        <div style="text-align:center;margin-top:2rem;">
+            <button onclick="closeTour()" style="padding:0.5rem 2rem;background:#f3f4f6;border:2px solid #e5e7eb;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;">Закрыть</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+var TOURS = {
+    'Москва':{
+        hero:'https://images.unsplash.com/photo-1513326738677-b964603b136d?w=800&q=80',
+        title:'Москва',
+        subtitle:'Столица России · основана в 1147 году · 13 млн жителей',
+        timeline:[
+            {year:'1147',text:'Первое упоминание Москвы в летописи. Князь Юрий Долгорукий основал город.'},
+            {year:'1480',text:'Конец татаро-монгольского ига. Москва — центр единого Русского государства.'},
+            {year:'1712',text:'Столица перенесена в Санкт-Петербург. Москва остаётся культурным центром.'},
+            {year:'1918',text:'Москва возвращает статус столицы России. Начало советской эпохи.'},
+            {year:'1947',text:'Основание метро. 800-летие Москвы. Город восстанавливается после войны.'},
+            {year:'2025',text:'Один из крупнейших мегаполисов мира. 13+ млн жителей. Центр инноваций.'}
+        ],
+        landmarks:[
+            {img:'https://images.unsplash.com/photo-1512499617640-c74e5c2cba55?w=400&q=70',title:'Красная площадь',desc:'Сердце России. Кремль, собор Василия Блаженного, Мавзолей.'},
+            {img:'https://images.unsplash.com/photo-1555109307-1db81169b3a3?w=400&q=70',title:'Храм Василия Блаженного',desc:'Символ Москвы. Построен в 1561 году при Иване Грозном.'},
+            {img:'https://images.unsplash.com/photo-1580331995956-62be38515634?w=400&q=70',title:'Москва-Сити',desc:'Деловой центр столицы. Небоскрёбы и современная архитектура.'},
+            {img:'https://images.unsplash.com/photo-1570719053928-ec57a32efb63?w=400&q=70',title:'ВДНХ',desc:'Выставка достижений народного хозяйства. Фонтаны, павильоны, парк.'}
+        ]
+    },
+    'Санкт-Петербург':{
+        hero:'https://images.unsplash.com/photo-1556610961-2c6b02e29d2b?w=800&q=80',
+        title:'Санкт-Петербург',
+        subtitle:'Северная столица · основан в 1703 году · 5.6 млн жителей',
+        timeline:[
+            {year:'1703',text:'Пётр I заложил Петропавловскую крепость. Основание Санкт-Петербурга.'},
+            {year:'1712',text:'Петербург становится столицей Российской империи.'},
+            {year:'1764',text:'Основание Эрмитажа — одного из крупнейших музеев мира.'},
+            {year:'1917',text:'Октябрьская революция. Свержение Временного правительства.'},
+            {year:'1944',text:'Снятие блокады Ленинграда. Город выстоял 872 дня осады.'},
+            {year:'2025',text:'Культурная столица России. Белые ночи, разводные мосты, мировая архитектура.'}
+        ],
+        landmarks:[
+            {img:'https://images.unsplash.com/photo-1608154538189-8ab019fb54fb?w=400&q=70',title:'Эрмитаж',desc:'Один из крупнейших художественных музеев мира. 3 миллиона экспонатов.'},
+            {img:'https://images.unsplash.com/photo-1596478214298-3f57193d6d39?w=400&q=70',title:'Петропавловская крепость',desc:'Место основания города. Усыпальница русских императоров.'},
+            {img:'https://images.unsplash.com/photo-1570719053022-7c2ca7f92ac6?w=400&q=70',title:'Исаакиевский собор',desc:'Крупнейший православный храм Петербурга. Золотой купол виден отовсюду.'},
+            {img:'https://images.unsplash.com/photo-1580817799695-c41eedc478d4?w=400&q=70',title:'Разводные мосты',desc:'Символ Петербурга. Дворцовый мост — главный герой белых ночей.'}
+        ]
+    },
+    'Казань':{
+        hero:'https://images.unsplash.com/photo-1566238498777-c0c25838444f?w=800&q=80',
+        title:'Казань',
+        subtitle:'Третья столица России · основана в 1005 году · 1.3 млн жителей',
+        timeline:[
+            {year:'1005',text:'Основание Казани как пограничной крепости Волжской Булгарии.'},
+            {year:'1552',text:'Взятие Казани Иваном Грозным. Присоединение к Русскому государству.'},
+            {year:'1804',text:'Основание Казанского университета — одного из старейших в России.'},
+            {year:'2005',text:'1000-летие Казани. Открытие метро, Кул-Шариф, мост Миллениум.'},
+            {year:'2013',text:'Казань принимает XXVII Всемирную летнюю Универсиаду.'},
+            {year:'2025',text:'Город мирного сосуществования ислама и православия. Центр спорта и IT.'}
+        ],
+        landmarks:[
+            {img:'https://images.unsplash.com/photo-1596020980678-57e71f85bc9e?w=400&q=70',title:'Казанский Кремль',desc:'Объект ЮНЕСКО. Мечеть Кул-Шариф и Благовещенский собор — рядом.'},
+            {img:'https://images.unsplash.com/photo-1570719052754-b10899bf4a3c?w=400&q=70',title:'Мечеть Кул-Шариф',desc:'Главная мечеть Татарстана. Вмещает 1500 человек. Открыта в 2005 году.'},
+            {img:'https://images.unsplash.com/photo-1566395786321-14fd8457ae13?w=400&q=70',title:'Храм всех религий',desc:'Уникальный архитектурный ансамбль. 16 куполов разных конфессий.'},
+            {img:'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=400&q=70',title:'Улица Баумана',desc:'Казанский Арбат. Пешеходная улица с историческими зданиями и кафе.'}
+        ]
+    }
+};
+
+(function initTour(){
+    var cityRaw = (function(){try{var d=JSON.parse(document.getElementById('weather-data').textContent||'{}');return(d.current&&d.current.city)?d.current.city.split(',')[0].trim():'';}catch(e){return'';}})();
+    if(TOURS[cityRaw]){
+        document.getElementById('tour-section').style.display='block';
+        document.getElementById('tour-city-name').textContent=cityRaw;
+    }
+})();
+
+function openTour(){
+    var cityRaw = (function(){try{var d=JSON.parse(document.getElementById('weather-data').textContent||'{}');return(d.current&&d.current.city)?d.current.city.split(',')[0].trim():'';}catch(e){return'';}})();
+    var t = TOURS[cityRaw]; if(!t) return;
+    document.getElementById('tour-overlay').style.display='block';
+    document.getElementById('tour-hero').style.backgroundImage='url('+t.hero+')';
+    document.getElementById('tour-title').textContent=t.title;
+    document.getElementById('tour-subtitle').textContent=t.subtitle;
+
+    var tl=document.getElementById('tour-timeline');
+    tl.innerHTML='<div style="font-size:18px;font-weight:800;margin-bottom:1rem;color:#111;">История города</div>';
+    t.timeline.forEach(function(e){
+        tl.innerHTML+='<div style="display:flex;gap:1rem;padding:0.5rem 0;border-bottom:1px solid #f3f4f6;"><span style="font-weight:800;color:#2563EB;min-width:48px;">'+e.year+'</span><span style="font-size:14px;color:#374151;">'+e.text+'</span></div>';
+    });
+
+    var lm=document.getElementById('tour-landmarks');
+    lm.innerHTML='';
+    t.landmarks.forEach(function(l){
+        lm.innerHTML+='<div style="border-radius:16px;overflow:hidden;border:1px solid #f3f4f6;"><div style="height:120px;background-size:cover;background-position:center;background-image:url('+l.img+');"></div><div style="padding:0.75rem;"><div style="font-weight:700;font-size:14px;color:#111;margin-bottom:0.25rem;">'+l.title+'</div><div style="font-size:12px;color:#6B7280;line-height:1.4;">'+l.desc+'</div></div></div>';
+    });
+
+    document.body.style.overflow='hidden';
+}
+
+function closeTour(){
+    document.getElementById('tour-overlay').style.display='none';
+    document.body.style.overflow='';
+}
+</script>
 <div id="fb-overlay" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.35);align-items:center;justify-content:center;">
     <div id="fb-card" style="background:#fff;border:2px solid #ddd;border-radius:24px;padding:2rem 1.5rem;max-width:400px;width:90%;box-shadow:0 16px 48px rgba(0,0,0,0.12);">
         <div style="font-size:17px;font-weight:700;margin-bottom:0.5rem;color:#111;">Какая погода сейчас?</div>
