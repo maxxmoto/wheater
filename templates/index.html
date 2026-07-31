@@ -759,7 +759,17 @@ body.theme-nothing input { border-radius:0!important; }
 
         function updateTourBtn(c){
             var tn = document.getElementById('tour-city-name-declined');
-            if(tn && TOURS[c]) tn.textContent = declineCity(c);
+            if(!tn) return;
+            var found = TOURS[c];
+            if(!found){
+                var lower = c.toLowerCase();
+                if(lower.indexOf('казан')>=0) found = TOURS['Казань'];
+                else if(lower.indexOf('москв')>=0) found = TOURS['Москва'];
+                else if(lower.indexOf('петербург')>=0||lower.indexOf('питер')>=0||lower.indexOf('санкт')>=0) found = TOURS['Санкт-Петербург'];
+                else if(lower.indexOf('йошкар')>=0) found = TOURS['Йошкар-Ола'];
+                else if(lower.indexOf('нижн')>=0&&lower.indexOf('новгород')>=0) found = TOURS['Нижний Новгород'];
+            }
+            if(found) tn.textContent = declineCity(c);
         }
 
         document.addEventListener('submit', function(e) {
