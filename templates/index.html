@@ -163,6 +163,13 @@
         body.theme-nothing #autocomplete-list { border-radius:0!important; }
         body.theme-nothing .nt-hero-grid { display:grid; grid-template-columns:1fr; gap:1.5rem; }
         @media (min-width:768px) { body.theme-nothing .nt-hero-grid { grid-template-columns:1fr 1fr; } }
+        .ad-side { position:fixed; top:50%; transform:translateY(-50%); width:200px; z-index:5; display:none; }
+        .ad-side video { width:100%; border-radius:16px; box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+        .ad-left { left:max(0.5rem, calc((100vw - 70rem) / 2 - 210px)); }
+        .ad-right { right:max(0.5rem, calc((100vw - 70rem) / 2 - 210px)); }
+        @media (min-width:1150px) { .ad-side { display:block; } }
+        .ad-mobile { display:none; }
+        @media (max-width:1149px) { .ad-mobile { display:flex; gap:0.5rem; justify-content:center; max-width:64rem; margin:0.5rem auto 0; } .ad-mobile video { width:48%; max-height:180px; object-fit:cover; border-radius:12px; } }
         @media (min-width:768px) { .ad-wrap { flex-direction:row!important; } .ad-desktop { display:block!important; width:180px!important; } }
         @media (max-width:767px) { .ad-desktop { display:block!important; max-width:100%!important; margin-bottom:0.5rem; } .ad-desktop video { max-height:200px; object-fit:cover; } }
     </style>
@@ -201,11 +208,7 @@
 
     <main style="max-width:64rem; margin:0 auto; padding:0.5rem 1.5rem 5rem; display:flex; flex-direction:column; gap:1.5rem;">
         <!-- Current Weather Header -->
-        <div class="ad-wrap" style="display:flex; gap:1.5rem; align-items:flex-start; flex-direction:column;">
-            <div class="ad-desktop" style="flex-shrink:0; width:100%; max-width:180px; display:none;">
-                <video id="ad-video" muted playsinline preload="auto" style="width:100%;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.1);" src="static/ad.mp4"></video>
-            </div>
-            <div style="flex:1; min-width:0;">
+        <!-- Current Weather Header -->
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4rem 0 3rem; text-align:center; position:relative; overflow:hidden; border-radius:32px; background:rgba(255,255,255,0.2);">
             <video id="g-video" autoplay muted loop playsinline webkit-playsinline preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45;z-index:0;pointer-events:none;border-radius:32px;"></video>
             <div style="position:relative;z-index:1;">
@@ -329,7 +332,6 @@
                                 <div style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--muted); letter-spacing:0.5px;">м/с</div>
             </div>
             </div>
-            </div>
         </div>
                     <div style="text-align:center; font-size:13px; color:var(--text); border-top:1px solid rgba(0,0,0,0.04); padding-top:0.75rem;">
                         {{ data.details.wind.direction }} {{ data.details.wind.degree }}°
@@ -438,8 +440,12 @@
         </div>
         {% endif %}
     </main>
-</div>
 
+    <div class="ad-side ad-left"><video id="ad-video-l" muted playsinline preload="auto" src="static/ad.mp4"></video></div>
+    <div class="ad-side ad-right"><video id="ad-video-r" muted playsinline preload="auto" src="static/ad2.mp4"></video></div>
+    <div class="ad-mobile"><video id="ad-video-m1" muted playsinline preload="auto" src="static/ad.mp4"></video><video id="ad-video-m2" muted playsinline preload="auto" src="static/ad2.mp4"></video></div>
+
+</div>
     <style>
         @media (min-width: 1024px) { .main-grid { grid-template-columns: 1fr 2fr !important; } }
         .ac-item { padding:0.6rem 1.2rem; cursor:pointer; font-size:15px; color:var(--text-heading); display:flex; justify-content:space-between; align-items:center; transition:background 0.15s; }
@@ -1085,11 +1091,13 @@ setupVideo();
 window.setupVideo = setupVideo;
 
 (function(){
-    var ad = document.getElementById('ad-video');
-    if(ad){
-        setTimeout(function(){ ad.play().catch(function(){}); }, 500);
-        ad.addEventListener('ended', function(){ ad.currentTime = ad.duration - 0.01; ad.pause(); });
-    }
+    ['ad-video-l','ad-video-r','ad-video-m1','ad-video-m2'].forEach(function(id){
+        var ad = document.getElementById(id);
+        if(ad){
+            setTimeout(function(){ ad.play().catch(function(){}); }, 800);
+            ad.addEventListener('ended', function(){ ad.currentTime = ad.duration - 0.01; ad.pause(); });
+        }
+    });
 })();
 
 function declineCity(name){
