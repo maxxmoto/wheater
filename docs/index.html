@@ -893,7 +893,7 @@ body.theme-nothing input { border-radius:0!important; }
         function autoDetectCity(){
             if(BACKEND && location.search.indexOf('city=') >= 0) return;
             if(location.search.indexOf('city=') >= 0) return;
-            fetch('https://ip-api.com/json/?fields=city,country').then(function(r){return r.json();}).then(function(d){
+            fetch('https://ipwhois.app/json/').then(function(r){return r.json();}).then(function(d){
                 if(d.city && d.city !== 'Москва') doSearch(d.city);
             }).catch(function(){});
         }
@@ -1011,14 +1011,6 @@ var TOURS = {
         ]
     }
 };
-
-(function initTour(){
-    var c = getTourCity();
-    if(TOURS[c]){
-        document.getElementById('tour-section').style.display='block';
-        document.getElementById('tour-city-name-declined').textContent=declineCity(c);
-    }
-})();
 
 function getTourCity(){
     var el = document.getElementById('g-city');
@@ -1480,6 +1472,14 @@ window.toggleChat=function(){
 };
 addMsg('Привет! Я погодный ИИ в '+cityPrep+'. Спроси про прогноз, что надеть, магнитные бури или есть ли риски.','ai');
 setTimeout(initLucide, 100);
+
+(function initTour(){
+    var c = getTourCity();
+    if(TOURS && TOURS[c]){
+        document.getElementById('tour-section').style.display='block';
+        document.getElementById('tour-city-name-declined').textContent=declineCity(c);
+    }
+})();
 })();
 </script>
 </body>
