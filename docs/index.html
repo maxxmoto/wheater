@@ -192,7 +192,9 @@
 
     <main style="max-width:64rem; margin:0 auto; padding:0.5rem 1.5rem 5rem; display:flex; flex-direction:column; gap:1.5rem;">
         <!-- Current Weather Header -->
-        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 0; text-align:center;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4rem 0 3rem; text-align:center; position:relative; overflow:hidden; border-radius:32px; background:rgba(255,255,255,0.2);">
+            <video id="g-video" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45;z-index:0;pointer-events:none;border-radius:32px;"></video>
+            <div style="position:relative;z-index:1;">
             <h1 class="cur-city" id="g-city" style="font-size:3rem; font-weight:400; letter-spacing:-0.03em; color:var(--text-heading); margin-bottom:0.25rem;">
                 Москва
             </h1>
@@ -205,6 +207,7 @@
             <div style="display:flex; gap:1rem; margin-top:0.5rem; font-size:1.125rem; font-weight:500; color:var(--muted);">
                 <span>Макс.: <b id="g-high">26</b>°</span>
                 <span>Мин.: <b id="g-low">14</b>°</span>
+            </div>
             </div>
         </div>
 
@@ -685,10 +688,13 @@ body.theme-nothing input { border-radius:0!important; }
 <div class="nt-content">
 <div class="nt-hero-grid">
 <div class="nt-card nt-hero-card">
+<video id="n-video" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.25;z-index:0;pointer-events:none;"></video>
+<div style="position:relative;z-index:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;">
 <div class="nt-hero-corner"><i data-lucide="sun" stroke-width="1.5"></i></div>
 <div class="nt-hero-badge" id="n-cond">Преимущественно солнечно</div>
 <div class="nt-hero-temp" id="n-temp">24°</div>
 <div class="nt-hero-hl"><span>H: <b id="n-high">26</b>°</span><span class="nt-hero-l">L: <b id="n-low">14</b>°</span></div>
+</div>
 </div>
 
 <div class="nt-hero-grid nt-metrics-grid">
@@ -897,6 +903,19 @@ try { WDATA = JSON.parse(document.getElementById('weather-data').textContent || 
 var cityRaw = (WDATA.current && WDATA.current.city) ? WDATA.current.city.split(',')[0] : '';
 var city = cityRaw ? cityRaw : 'этом городе';
 var cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
+
+(function setupVideo(){
+    var c = cur();
+    var cond = String(c.condition || '').toLowerCase();
+    var src = 'static/sun.mp4';
+    var isNight = /moon|ноч|вечер/.test(cond) || (WDATA.hourly && WDATA.hourly[0] && WDATA.hourly[0].icon && WDATA.hourly[0].icon.indexOf('moon')>=0);
+    var isRain = /дожд|лив|гроз|снег|rain|storm|snow/.test(cond);
+    if(isNight) src = 'static/moon.mp4';
+    else if(isRain) src = 'static/rain.mp4';
+    [document.getElementById('g-video'), document.getElementById('n-video')].forEach(function(v){
+        if(v) v.src = src;
+    });
+})();
 
 function declineCity(name){
     if(!name) return name;
