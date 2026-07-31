@@ -683,7 +683,7 @@ body.theme-nothing input { border-radius:0!important; }
                     if (!g.features || !g.features.length) { alert('Город не найден'); hideLoading(); return; }
                     const p = g.features[0].properties;
                     const lat = p.lat, lon = p.lon;
-                    const cityName = ((p.city || p.name) + (p.country ? ', ' + p.country : '')).replace(', Россия','').replace(', Russia','').trim();
+                    const cityName = ((p.city || p.name) + (p.country ? ', ' + p.country : '')).replace(', Россия','').replace(', Russia','').replace('Городской округ ','').trim();
                     return fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto').then(r => r.json()).then(w => ({ w, cityName }));
                 })
                 .then(({ w, cityName }) => renderOpenMeteo(w, cityName))
@@ -890,19 +890,11 @@ var TOURS = {
 
 function getTourCity(){
     var el = document.getElementById('g-city');
-    if(el && el.textContent) return el.textContent.split(',')[0].trim();
+    if(el && el.textContent) return el.textContent.replace('Городской округ ','').split(',')[0].trim();
     el = document.getElementById('n-city');
-    if(el && el.textContent) return el.textContent.split(',')[0].trim();
-    try{var d=JSON.parse(document.getElementById('weather-data').textContent||'{}');return(d.current&&d.current.city)?d.current.city.split(',')[0].trim():'';}catch(e){return'';}
+    if(el && el.textContent) return el.textContent.replace('Городской округ ','').split(',')[0].trim();
+    try{var d=JSON.parse(document.getElementById('weather-data').textContent||'{}');var name=(d.current&&d.current.city)?d.current.city.split(',')[0].replace('Городской округ ','').trim():'';return name;}catch(e){return'';}
 }
-
-(function initTour(){
-    var c = getTourCity();
-    if(TOURS[c]){
-        document.getElementById('tour-section').style.display='block';
-        document.getElementById('tour-city-name').textContent=c;
-    }
-})();
 
 function openTour(){
     var c = getTourCity();
