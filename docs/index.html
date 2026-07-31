@@ -169,6 +169,7 @@
 <div id="g-loading" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,0.6);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;">
     <div style="padding:1.5rem 2rem;background:var(--card-bg,#fff);border:2px solid var(--card-border,#000);box-shadow:var(--card-shadow,4px 4px 0 0 #000);font-family:'Space Mono',monospace;font-size:13px;font-weight:700;text-transform:uppercase;">Загрузка...</div>
 </div>
+<script type="application/json" id="weather-data">{"current": {"city": "\u041c\u043e\u0441\u043a\u0432\u0430", "condition": "\u041f\u0440\u0435\u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0435\u043d\u043d\u043e \u0441\u043e\u043b\u043d\u0435\u0447\u043d\u043e", "high": 26, "low": 14, "temp": 24}, "daily": [{"currentTemp": 24, "day": "\u0421\u0435\u0433\u043e\u0434\u043d\u044f", "high": 26, "icon": "sun", "low": 14, "precip": 0}, {"day": "\u0412\u0441", "high": 28, "icon": "sun", "low": 16, "precip": 0}, {"day": "\u041f\u043d", "high": 22, "icon": "cloud-rain", "low": 15, "precip": 60}, {"day": "\u0412\u0442", "high": 19, "icon": "cloud", "low": 12, "precip": 20}, {"day": "\u0421\u0440", "high": 21, "icon": "sun", "low": 13, "precip": 0}, {"day": "\u0427\u0442", "high": 24, "icon": "cloud", "low": 15, "precip": 10}, {"day": "\u041f\u0442", "high": 25, "icon": "cloud-lightning", "low": 17, "precip": 80}, {"day": "\u0421\u0431", "high": 27, "icon": "sun", "low": 16, "precip": 0}], "details": {"feelsLike": 23, "humidity": 45, "pressure": {"diff": -3, "norm": 758, "value": 755}, "sunrise": "05:20", "sunset": "21:14", "uvIndex": {"description": "\u041e\u0441\u0442\u0430\u0432\u0430\u0439\u0442\u0435\u0441\u044c \u0432 \u0442\u0435\u043d\u0438 \u0432 \u043f\u043e\u043b\u0443\u0434\u0435\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f.", "level": "\u0423\u043c\u0435\u0440\u0435\u043d\u043d\u044b\u0439", "value": 5}, "visibility": 10, "wind": {"degree": 315, "direction": "\u0421\u0417", "gust": 7.2, "speed": 4.2}}, "hourly": [{"icon": "sun", "temp": 24, "time": "\u0421\u0435\u0439\u0447\u0430\u0441"}, {"icon": "sun", "temp": 25, "time": "13:00"}, {"icon": "cloud", "temp": 26, "time": "14:00"}, {"icon": "cloud", "temp": 26, "time": "15:00"}, {"icon": "cloud-rain", "temp": 25, "time": "16:00"}, {"icon": "cloud-rain", "temp": 23, "time": "17:00"}, {"icon": "cloud", "temp": 21, "time": "18:00"}, {"icon": "sun", "temp": 19, "time": "19:00"}], "weekMax": 28, "weekMin": 12}</script>
 
 <div class="theme-glass-content">
     <!-- Navigation / Search -->
@@ -861,5 +862,161 @@ body.theme-nothing input { border-radius:0!important; }
         }
     </script>
     <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('static/sw.js');</script>
+
+<button id="ai-btn" onclick="toggleChat()" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;width:3.5rem;height:3.5rem;border-radius:50%;border:2px solid var(--card-border,#000);background:var(--card-bg,#fff);box-shadow:var(--card-shadow,4px 4px 0 0 #000);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text,#111);transition:transform 0.15s;">
+    <i data-lucide="message-circle" style="width:1.5rem;height:1.5rem;color:var(--accent,#2563EB);"></i>
+</button>
+
+<div id="ai-panel" style="display:none;position:fixed;bottom:5.5rem;right:1.5rem;z-index:200;width:min(380px,calc(100vw - 2rem));height:min(520px,calc(100vh - 7rem));background:var(--card-bg,#fff);border:2px solid var(--card-border,#000);box-shadow:var(--card-shadow,4px 4px 0 0 #000);border-radius:var(--card-radius,24px);overflow:hidden;flex-direction:column;">
+    <div style="padding:1rem 1.25rem;border-bottom:2px solid var(--card-border,#000);display:flex;align-items:center;gap:0.6rem;background:var(--accent,#2563EB);color:#fff;">
+        <i data-lucide="bot" style="width:1.25rem;height:1.25rem;flex-shrink:0;"></i>
+        <div style="flex:1;">
+            <div style="font-weight:700;font-size:14px;">Погодный ИИ</div>
+            <div style="font-size:11px;opacity:0.8;">Знает всё о погоде в Москва</div>
+        </div>
+        <button onclick="toggleChat()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+    <div id="ai-msgs" style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.6rem;scrollbar-width:none;"></div>
+    <div id="ai-quick" style="display:flex;gap:0.4rem;padding:0 0.75rem 0.6rem;overflow-x:auto;scrollbar-width:none;flex-wrap:wrap;"></div>
+    <form id="ai-form" style="display:flex;gap:0.4rem;padding:0.75rem;border-top:2px solid var(--card-border,#000);">
+        <input id="ai-input" type="text" placeholder="Спроси о погоде..." style="flex:1;background:var(--card-bg,#fff);border:2px solid var(--card-border,#000);border-radius:var(--card-radius,12px);padding:0.6rem 0.9rem;outline:none;font-size:14px;color:var(--text,#111);">
+        <button type="submit" style="background:var(--accent,#2563EB);border:2px solid var(--card-border,#000);color:#fff;border-radius:var(--card-radius,12px);padding:0 1rem;cursor:pointer;font-size:12px;font-weight:700;">➤</button>
+    </form>
+</div>
+
+<script>
+(function(){
+var WDATA = {};
+try { WDATA = JSON.parse(document.getElementById('weather-data').textContent || '{}'); } catch(e) {}
+var city = (WDATA.current && WDATA.current.city) ? WDATA.current.city.split(',')[0] : 'твоём городе';
+
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function addMsg(text, who){
+    var box=document.getElementById('ai-msgs');
+    var d=document.createElement('div');
+    d.style.cssText='max-width:85%;padding:0.6rem 0.9rem;border-radius:12px;font-size:13px;line-height:1.45;white-space:pre-line;'+(who==='user'?'align-self:flex-end;background:var(--accent,#2563EB);color:#fff;':'align-self:flex-start;background:rgba(0,0,0,0.06);color:var(--text,#111);');
+    d.innerHTML=esc(text);
+    box.appendChild(d); box.scrollTop=box.scrollHeight;
+}
+function typing(){
+    var box=document.getElementById('ai-msgs');
+    var d=document.createElement('div');d.id='ai-typing';d.style.cssText='align-self:flex-start;padding:0.6rem 0.9rem;border-radius:12px;font-size:13px;background:rgba(0,0,0,0.06);color:var(--text,#111);';
+    d.textContent='...';box.appendChild(d);box.scrollTop=box.scrollHeight;
+}
+function reply(text){var t=document.getElementById('ai-typing');if(t)t.remove();addMsg(text,'ai');}
+
+function cur(){return WDATA.current||{};}
+function det(){return WDATA.details||{};}
+function deg(v){return (v!==undefined&&v!==null)?Math.round(v):'—';}
+
+function weatherSay(){
+    var c=cur(),d=det();var t=deg(c.temp),hi=deg(c.high),lo=deg(c.low);
+    var lines=[];
+    lines.push('📍 '+(c.city||city));
+    lines.push('');
+    lines.push('Сейчас '+t+'°, '+String(c.condition||'—').toLowerCase()+'.');
+    lines.push('Днём до '+hi+'°, ночью до '+lo+'°.');
+    if(d.wind&&d.wind.speed) lines.push('Ветер '+(d.wind.direction||'')+' '+d.wind.speed+' м/с.');
+    if(d.humidity) lines.push('Влажность '+d.humidity+'%.');
+    if(d.feelsLike) lines.push('Ощущается как '+deg(d.feelsLike)+'°.');
+    return lines.join('\n');
+}
+function clothesSay(){
+    var t=deg(cur().temp);
+    if(t>=25) return 'Жарко (+'+t+'°). Надевай лёгкую одежду: футболку, шорты, кепку. Не забудь воду и солнцезащитный крем! ☀️';
+    if(t>=18) return 'Тепло (+'+t+'°). Отлично подойдут футболка и лёгкие штаны или шорты. Вечером может понадобиться лёгкая кофта.';
+    if(t>=10) return 'Прохладно (+'+t+'°). Лучше надеть кофту или лёгкую куртку, длинные брюки.';
+    if(t>=0) return 'Холодно ('+t+'°). Надевай тёплую куртку, свитер и шапку.';
+    if(t<0) return 'Очень холодно ('+t+'°). Тёплая зимняя куртка, шапка, шарф и перчатки обязательны! 🥶';
+}
+function riskSay(){
+    var r=[];var p=det().pressure;
+    if(p&&p.warning) r.push('⚠️ Давление: '+p.warning);
+    var m=det().magnetic;
+    if(m) r.push('🧲 Магнитное поле: Kp '+m.value+' — '+m.status+'.');
+    if(m&&m.value>=5) r.push('Метеозависимым стоит беречься: возможны головные боли и усталость.');
+    if(det().uvIndex) r.push('☀️ УФ-индекс '+det().uvIndex.value+' — '+det().uvIndex.level+'. '+(det().uvIndex.description||''));
+    if(p&&p.warning) r.push('При плохом самочувствии — обратитесь к врачу.');
+    return r.length?r.join('\n\n'):'Сейчас погодных рисков не обнаружено. Всё спокойно ✅';
+}
+function windSay(){
+    var w=det().wind;if(!w||!w.speed)return'Нет данных о ветре.';
+    var s=w.speed,msg;
+    if(s<2)msg='Ветра почти нет.';
+    else if(s<5)msg='Лёгкий ветерок.';
+    else if(s<8)msg='Умеренный ветер.';
+    else if(s<12)msg='Сильный ветер — закрепи всё, что может улететь.';
+    else msg='Очень сильный ветер, лучше остаться дома.';
+    return '💨 '+msg+' ('+w.direction+' '+s+' м/с).';
+}
+function sunSay(){
+    var d=det();
+    var r='☀️ Восход в '+d.sunrise+', закат в '+d.sunset+'.';
+    if(d.uvIndex) r+='\nУФ-индекс: '+d.uvIndex.value+' ('+d.uvIndex.level+').';
+    return r;
+}
+function rainSay(){
+    var c=cur(),cond=String(c.condition||'').toLowerCase();
+    var daily=WDATA.daily||[];
+    if(/дожд|лив|гроз|снег|осадк|туман|пасмур/.test(cond)) return '🌧️ Сейчас: '+String(c.condition).toLowerCase()+'. Возьми зонт!';
+    var pops=daily.map(function(d){return d.precip||0;}).filter(function(p){return p>0;});
+    if(pops.length) return 'Сейчас осадков нет. Ближайшие дни: вероятность дождя до '+Math.max.apply(null,pops)+'%.';
+    return 'Сегодня осадков не ожидается — можно смело выходить без зонта. ☀️';
+}
+function forecastToday(){
+    var d=WDATA.daily||[];if(!d.length)return'Нет данных о прогнозе.';
+    var t=d[0];var r=['📅 Прогноз на сегодня ('+String(t.day||'сегодня').toLowerCase()+'):'];
+    r.push('Температура: от '+t.low+'° до '+t.high+'°.');
+    if(t.precip>0)r.push('Шанс осадков: '+t.precip+'%.');
+    else r.push('Осадков не ожидается.');
+    return r.join('\n');
+}
+function generalSay(){
+    return weatherSay()+'\n\nСпроси меня: "что надеть?", "есть ли риск?", "какой ветер?" или "прогноз на сегодня".';
+}
+
+function think(q){
+    q=q.toLowerCase();
+    if(/прогноз|сегодня|погода\s+на/.test(q)&&/одеть|надеть/.test(q)) return clothesSay();
+    if(/одеть|надеть|одежд/.test(q)) return clothesSay();
+    if(/риск|опасн|самочув|давлен|метео/.test(q)) return riskSay();
+    if(/ветр/.test(q)) return windSay();
+    if(/солнц|восход|закат|уф/.test(q)) return sunSay();
+    if(/дожд|снег|осадк|зонт/.test(q)) return rainSay();
+    if(/прогноз|сегодня|завтра|недел/.test(q)) return forecastToday();
+    if(/привет|здравств|хай|hello/.test(q)) return 'Привет! 👋 Я погодный ИИ в '+city+'. Спроси меня про прогноз, одежду или риски погоды.';
+    if(/спасибо|благодар/.test(q)) return 'Всегда пожалуйста! 🌤️ Обращайся.';
+    return generalSay();
+}
+
+var quick=[
+    'Прогноз на сегодня',
+    'Что надеть?',
+    'Есть ли риски?',
+    'Какой ветер?',
+    'Будут ли осадки?'
+];
+var qs=document.getElementById('ai-quick');
+quick.forEach(function(t){var b=document.createElement('button');b.textContent=t;b.style.cssText='font-size:11px;font-weight:700;padding:0.4rem 0.7rem;border:2px solid var(--card-border,#000);background:var(--card-bg,#fff);border-radius:999px;cursor:pointer;color:var(--text,#111);white-space:nowrap;';b.onclick=function(){sendMsg(t);};qs.appendChild(b);});
+
+function sendMsg(text){
+    addMsg(text,'user');
+    typing();
+    setTimeout(function(){reply(think(text));},600);
+}
+document.getElementById('ai-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var i=document.getElementById('ai-input');
+    var v=i.value.trim();if(!v)return;
+    i.value='';sendMsg(v);
+});
+window.toggleChat=function(){
+    var p=document.getElementById('ai-panel'),b=document.getElementById('ai-btn');
+    if(p.style.display==='none'){p.style.display='flex';b.style.display='none';setTimeout(function(){document.getElementById('ai-input').focus();},50);}
+    else{p.style.display='none';b.style.display='flex';}
+};
+addMsg('Привет! Я погодный ИИ в '+city+'. Спроси про прогноз, что надеть или есть ли риски.','ai');
+})();
+</script>
 </body>
 </html>
