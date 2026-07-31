@@ -1124,6 +1124,7 @@ var quick=[
     'Что надеть?',
     'Магнитные бури?',
     'Есть ли риски?',
+    'Расскажи про город',
     'Какой ветер?',
     'Будут ли осадки?'
 ];
@@ -1131,6 +1132,18 @@ var qs=document.getElementById('ai-quick');
 quick.forEach(function(t){var b=document.createElement('button');b.textContent=t;b.style.cssText='font-size:11px;font-weight:700;padding:0.4rem 0.7rem;border:2px solid var(--card-border,#000);background:var(--card-bg,#fff);border-radius:999px;cursor:pointer;color:var(--text,#111);white-space:nowrap;';b.onclick=function(){sendMsg(t);};qs.appendChild(b);});
 
 var GEMINI_KEY = 'hf_n' + 'YGwJHtFsmApRiyzBnrCFHauAtDEbdwcAs';
+
+function tourContext(){
+    var c = getTourCity();
+    var t = TOURS[c];
+    if(!t) return '';
+    var ctx = ['═══ ИНФОРМАЦИЯ О ГОРОДЕ ═══'];
+    ctx.push('Ты — опытный экскурсовод и житель города '+c+'. Рассказывай о нём как местный: с любовью, знанием деталей, интересными фактами.');
+    ctx.push('Город: '+t.title+' — '+t.subtitle);
+    ctx.push('Таймлайн истории:');
+    t.timeline.forEach(function(e){ ctx.push('- '+e.year+': '+e.text); });
+    return ctx.join('\n');
+}
 
 function weatherContext(){
     var c=cur(),d=det();
@@ -1190,12 +1203,25 @@ function geminiAsk(question){
         '- Если Kp магнитного поля >4 — предупреди про возможные головные боли и усталость',
         '- Если УФ >5 — напомни про защиту от солнца',
         '- Если ветер >10 м/с — предупреди про опасность',
-        '- Если температура комфортная и без осадков — предложи прогулку или активность'
+        '- Если температура комфортная и без осадков — предложи прогулку или активность',
+        '',
+        '== РЕЖИМ ЭКСКУРСОВОДА ==',
+        '- Если пользователь спрашивает про ГОРОД (история, достопримечательности, куда сходить, что посмотреть, интересные факты, как местный житель) — включи режим экскурсовода',
+        '- В режиме экскурсовода: используй данные из "ИНФОРМАЦИЯ О ГОРОДЕ" в контексте',
+        '- Рассказывай как человек, который живёт здесь много лет: со страстью, с мелкими деталями, с рекомендациями',
+        '- Упомяни конкретные места, годы, факты из таймлайна',
+        '- Если данных о городе нет в контексте — скажи: я знаю детально только Москву, Петербург и Казань',
+        '- В режиме экскурсовода отвечай длиннее (5-8 предложений), чтобы было интересно',
+        '- Начинай ответ экскурсовода с приветствия: "Как местный житель..." или "Живу здесь 15 лет..."',
+        '- Для Москвы: упомяни Сталинские высотки, Москва-Сити, Триумфальные ворота',
+        '- Для Петербурга: упомяни разводные мосты, Казанский собор, Стрелку Васильевского острова'
     ].join('\n');
+
+    var userMsg = weatherContext() + '\n\n' + tourContext() + '\n\nВОПРОС: ' + question;
     return fetch('https://router.huggingface.co/v1/chat/completions',{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+GEMINI_KEY},
-        body:JSON.stringify({model:'Qwen/Qwen2.5-7B-Instruct',max_tokens:500,messages:[{role:'system',content:systemPrompt},{role:'user',content:weatherContext()+'\n\nВОПРОС: '+question}]})
+        body:JSON.stringify({model:'Qwen/Qwen2.5-7B-Instruct',max_tokens:500,messages:[{role:'system',content:systemPrompt},{role:'user',content:userMsg}]})
     }).then(function(r){
         if(!r.ok) throw new Error('hf '+r.status);
         return r.json();
