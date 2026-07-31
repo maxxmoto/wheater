@@ -890,14 +890,8 @@ body.theme-nothing input { border-radius:0!important; }
         }
 
         function updateTourBtn(c){
-            var ts = document.getElementById('tour-section');
             var tn = document.getElementById('tour-city-name-declined');
-            if(TOURS[c]){
-                if(ts) ts.style.display = 'block';
-                if(tn) tn.textContent = declineCity(c);
-            } else {
-                if(ts) ts.style.display = 'none';
-            }
+            if(tn && TOURS[c]) tn.textContent = declineCity(c);
         }
 
         document.addEventListener('submit', function(e) {
@@ -950,16 +944,6 @@ body.theme-nothing input { border-radius:0!important; }
 </div>
 <div id="tour-section" style="text-align:center;padding:0.5rem 1rem 1rem;max-width:64rem;margin:0 auto;">
     <button onclick="openTour()" style="background:linear-gradient(135deg,#2563EB,#7C3AED);color:#fff;border:none;border-radius:16px;padding:0.85rem 2rem;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(37,99,235,0.3);transition:transform 0.2s;">🏛 Отправьтесь в онлайн-экскурсию по <span id="tour-city-name-declined">Москва</span></button>
-    <script>
-    (function fixTour(){
-        var c = document.getElementById('tour-city-name-declined');
-        if(!c || !c.textContent.trim()) return;
-        var name = c.textContent.trim();
-        var ok = ['Москва','Санкт-Петербург','Казань','Йошкар-Ола','Нижний Новгород','Городской округ Казань'].indexOf(name) >= 0;
-        document.getElementById('tour-section').style.display = ok ? 'block' : 'none';
-        if(ok) c.textContent = (window.declineCity||function(n){return n;})(name);
-    })();
-    </script>
 </div>
 
 <div id="tour-overlay" onclick="if(event.target===this)closeTour()" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.6);overflow-y:auto;padding:2rem 1rem;">
@@ -1080,7 +1064,8 @@ function getTourCity(){
 
 function openTour(){
     var c = getTourCity();
-    var t = TOURS[c]; if(!t) return;
+    var t = TOURS[c];
+    if(!t){ alert('Экскурсия доступна для Москвы, Петербурга, Казани и Йошкар-Олы.'); return; }
     document.getElementById('tour-overlay').style.display='block';
     document.getElementById('tour-hero').style.backgroundImage='url('+t.hero+')';
     document.getElementById('tour-title').textContent=t.title;
