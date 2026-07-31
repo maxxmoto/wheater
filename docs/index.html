@@ -1188,7 +1188,7 @@ function declineCity(name){
         'тольятти':'Тольятти','самара':'Самаре','уфа':'Уфе','орел':'Орле',
         'курск':'Курске','омск':'Омске','новосибирск':'Новосибирске',
         'екатеринбург':'Екатеринбурге','вологда':'Вологде','киров':'Кирове',
-        'нижний новгород':'Нижнем Новгороде','йошкар-ола':'Йошкар-Оле'
+        'нижний новгород':'Нижнем Новгороде',        'йошкар-ола':'Йошкар-Оле'
     };
     if(special[lower]) return special[lower];
     if(/[иоуэю]$/.test(lower)) return n;
@@ -1198,6 +1198,7 @@ function declineCity(name){
     if(lower.endsWith('й')) return n.slice(0,-1)+'е';
     return n+'е';
 }
+window.declineCity = declineCity;
 
 function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function addMsg(text, who){
