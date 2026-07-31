@@ -898,7 +898,7 @@ body.theme-nothing input { border-radius:0!important; }
 <script>
 var TOURS = {
     'Москва':{
-        hero:'https://images.unsplash.com/photo-1513326738677-b964603b136d?w=800&q=80',
+        hero:'static/msk_bg.webp',
         title:'Москва',
         subtitle:'Столица России · основана в 1147 году · 13 млн жителей',
         timeline:[
@@ -909,12 +909,9 @@ var TOURS = {
             {year:'1947',text:'Основание метро. 800-летие Москвы. Город восстанавливается после войны.'},
             {year:'2025',text:'Один из крупнейших мегаполисов мира. 13+ млн жителей. Центр инноваций.'}
         ],
-        landmarks:[
-            {img:'https://images.unsplash.com/photo-1512499617640-c74e5c2cba55?w=400&q=70',title:'Красная площадь',desc:'Сердце России. Кремль, собор Василия Блаженного, Мавзолей.'},
-            {img:'https://images.unsplash.com/photo-1555109307-1db81169b3a3?w=400&q=70',title:'Храм Василия Блаженного',desc:'Символ Москвы. Построен в 1561 году при Иване Грозном.'},
-            {img:'https://images.unsplash.com/photo-1580331995956-62be38515634?w=400&q=70',title:'Москва-Сити',desc:'Деловой центр столицы. Небоскрёбы и современная архитектура.'},
-            {img:'https://images.unsplash.com/photo-1570719053928-ec57a32efb63?w=400&q=70',title:'ВДНХ',desc:'Выставка достижений народного хозяйства. Фонтаны, павильоны, парк.'}
-        ]
+        localImgs:['static/msk1.jpg','static/msk2.jpg','static/msk3.webp'],
+        localTitles:['Сталинские высотки','Москва-Сити','Триумфальные ворота'],
+        localDescs:['Семь знаменитых небоскрёбов, построенных в 1947—1957 годах. МГУ, гостиница Украина, МИД — архитектурные символы советской эпохи.','Деловой центр столицы. Башни Федерация, Меркурий, Эволюция. Самый высокий небоскрёб Европы — башня Федерация (374 м).','Памятник победе в войне 1812 года. Построены в 1834 году на Тверской заставе. Архитектор Бове. Чугунное литьё — шедевр.']
     },
     'Санкт-Петербург':{
         hero:'static/spb_bg.jpg',
@@ -928,12 +925,8 @@ var TOURS = {
             {year:'1944',text:'Снятие блокады Ленинграда. Город выстоял 872 дня осады.'},
             {year:'2025',text:'Культурная столица России. Белые ночи, разводные мосты, мировая архитектура.'}
         ],
-        landmarks:[
-            {img:'https://images.unsplash.com/photo-1608154538189-8ab019fb54fb?w=400&q=70',title:'Эрмитаж',desc:'Один из крупнейших художественных музеев мира. 3 миллиона экспонатов.'},
-            {img:'https://images.unsplash.com/photo-1596478214298-3f57193d6d39?w=400&q=70',title:'Петропавловская крепость',desc:'Место основания города. Усыпальница русских императоров.'},
-            {img:'https://images.unsplash.com/photo-1570719053022-7c2ca7f92ac6?w=400&q=70',title:'Исаакиевский собор',desc:'Крупнейший православный храм Петербурга. Золотой купол виден отовсюду.'},
-            {img:'https://images.unsplash.com/photo-1580817799695-c41eedc478d4?w=400&q=70',title:'Разводные мосты',desc:'Символ Петербурга. Дворцовый мост — главный герой белых ночей.'}
-        ]
+        localImgs:['static/spb1.jpg','static/spb2.jpg','static/spb3.jpg'],
+        localTitles:['Разводные мосты','Казанский собор','Стрелка Васильевского острова']
     },
     'Казань':{
         hero:'https://images.unsplash.com/photo-1566238498777-c0c25838444f?w=800&q=80',
@@ -996,16 +989,13 @@ function openTour(){
 
     var lm=document.getElementById('tour-landmarks');
     lm.innerHTML='';
-    if(c==='Санкт-Петербург'){
+    if(t.localImgs){
         lm.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;';
-        var imgs=['static/spb1.jpg','static/spb2.jpg','static/spb3.jpg'];
-        var titles=['Разводные мосты','Казанский собор','Стрелка Васильевского острова'];
-        var descs=['Визитная карточка Петербурга. Дворцовый, Троицкий, Благовещенский — каждый мост — произведение инженерного искусства, разводится по ночам под музыку.','Главный собор Невского проспекта. Колоннада из 96 колонн, построен в 1811 году Воронихиным. Архитектурный шедевр русского классицизма.','Мыс Васильевского острова с Ростральными колоннами. Отсюда открывается панорама на Неву, Петропавловскую крепость и Эрмитаж.'];
         var rots=['-3deg','2deg','-1deg'];
-        imgs.forEach(function(src,i){
-            lm.innerHTML+='<div style="width:200px;background:#fff;padding:12px 12px 40px;box-shadow:0 8px 24px rgba(0,0,0,0.12);transform:rotate('+rots[i]+');border:1px solid #e5e5e5;"><img src="'+src+'" style="width:100%;border-radius:4px;display:block;"><div style="font-family:Georgia,serif;font-style:italic;font-size:11px;color:#6B7280;text-align:center;margin-top:8px;">'+titles[i]+'</div></div>';
+        t.localImgs.forEach(function(src,i){
+            lm.innerHTML+='<div style="width:200px;background:#fff;padding:12px 12px 40px;box-shadow:0 8px 24px rgba(0,0,0,0.12);transform:rotate('+rots[i]+');border:1px solid #e5e5e5;"><img src="'+src+'" style="width:100%;border-radius:4px;display:block;"><div style="font-family:Georgia,serif;font-style:italic;font-size:11px;color:#6B7280;text-align:center;margin-top:8px;">'+(t.localTitles[i]||'')+'</div></div>';
         });
-    } else {
+    } else if(t.landmarks){
         lm.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:1rem;';
         t.landmarks.forEach(function(l){
             lm.innerHTML+='<div style="border-radius:16px;overflow:hidden;border:1px solid #f3f4f6;"><div style="height:120px;background-size:cover;background-position:center;background-image:url('+l.img+');"></div><div style="padding:0.75rem;"><div style="font-weight:700;font-size:14px;color:#111;margin-bottom:0.25rem;">'+l.title+'</div><div style="font-size:12px;color:#6B7280;line-height:1.4;">'+l.desc+'</div></div></div>';
