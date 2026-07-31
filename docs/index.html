@@ -819,7 +819,7 @@ body.theme-nothing input { border-radius:0!important; }
                     return fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto').then(r => r.json()).then(w => ({ w, cityName }));
                 })
                 .then(({ w, cityName }) => renderOpenMeteo(w, cityName))
-                .catch(() => { alert('Ошибка загрузки погоды'); hideLoading(); });
+                .catch((e) => { alert('Ошибка загрузки погоды: ' + (e.message || e)); hideLoading(); });
         }
 
         function showLoading() { const el = document.getElementById('g-loading'); if (el) { el.style.display = 'flex'; } }
@@ -901,9 +901,14 @@ body.theme-nothing input { border-radius:0!important; }
         function autoDetectCity(){
             if(BACKEND && location.search.indexOf('city=') >= 0) return;
             if(location.search.indexOf('city=') >= 0) return;
-            fetch('https://ipwhois.app/json/').then(function(r){return r.json();}).then(function(d){
-                if(d.city && d.city !== 'Москва') doSearch(d.city);
-            }).catch(function(){});
+            try {
+                fetch('https://ipwhois.app/json/').then(function(r){
+                    if(!r.ok) return;
+                    return r.json();
+                }).then(function(d){
+                    if(d && d.city && d.city !== 'Москва') doSearch(d.city);
+                }).catch(function(){});
+            } catch(e) {}
         }
         autoDetectCity();
     </script>
