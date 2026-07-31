@@ -736,70 +736,41 @@ body.theme-nothing input { border-radius:0!important; }
     </script>
     <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('static/sw.js');</script>
 
-<div id="feedback-bar" style="text-align:center;padding:2rem 1rem;font-size:12px;color:var(--muted,#6B7280);font-family:var(--font,'Inter',sans-serif);max-width:64rem;margin:0 auto;">
-    Нашли ошибку или не согласны с прогнозом?
-    <button onclick="openFeedback()" style="background:none;border:none;color:var(--accent,#2563EB);cursor:pointer;font-weight:700;font-size:12px;text-decoration:underline;font-family:inherit;">Помогите нам стать лучше →</button>
+<div style="text-align:center;padding:1.5rem 1rem;max-width:64rem;margin:0 auto;">
+    <span style="font-size:13px;color:#6B7280;">Нашли ошибку или не согласны с прогнозом? </span>
+    <button onclick="document.getElementById('fb-overlay').style.display='flex'" style="background:none;border:none;color:#2563EB;cursor:pointer;font-weight:700;font-size:13px;text-decoration:underline;">Помогите нам стать лучше →</button>
 </div>
-
-<div id="feedback-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;">
-    <div style="background:#fff;border:2px solid var(--card-border,#000);box-shadow:var(--card-shadow,4px 4px 0 0 #000);border-radius:var(--card-radius,24px);padding:2rem;max-width:420px;width:90%;">
-        <div id="fb-thanks" style="display:none;text-align:center;font-size:18px;font-weight:700;color:var(--text,#111);padding:2rem 0;">Спасибо! Мы учтём ваш отзыв 🌤️</div>
-        <div id="fb-form">
-            <div style="font-size:16px;font-weight:700;margin-bottom:1.25rem;color:var(--text,#111);">Какая погода сейчас?</div>
-            <div style="font-size:13px;color:var(--muted,#6B7280);margin-bottom:1rem;">Выберите реальную погоду для этого города:</div>
-            <div id="fb-buttons" style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1.25rem;"></div>
-            <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
-                <button onclick="closeFeedback()" style="padding:0.5rem 1rem;background:#eee;border:2px solid #ccc;border-radius:12px;cursor:pointer;font-size:13px;">Закрыть</button>
-            </div>
-        </div>
+<div id="fb-overlay" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.35);align-items:center;justify-content:center;">
+    <div id="fb-card" style="background:#fff;border:2px solid #ddd;border-radius:24px;padding:2rem 1.5rem;max-width:400px;width:90%;box-shadow:0 16px 48px rgba(0,0,0,0.12);">
+        <div style="font-size:17px;font-weight:700;margin-bottom:0.5rem;color:#111;">Какая погода сейчас?</div>
+        <div style="font-size:13px;color:#6B7280;margin-bottom:1.2rem;">Выберите реальную погоду для этого города:</div>
+        <div id="fb-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;"></div>
+        <div id="fb-ok" style="display:none;text-align:center;font-size:18px;font-weight:700;color:#111;padding:2rem 0;">Спасибо, записали! 🌤️</div>
     </div>
 </div>
-
 <script>
-var feedbackOptions = [
-    {icon:'☀️',text:'Солнечно',cond:'ясно'},
-    {icon:'⛅',text:'Облачно',cond:'облачно'},
-    {icon:'🌧️',text:'Дождь',cond:'дождь'},
-    {icon:'⛈️',text:'Гроза',cond:'гроза'},
-    {icon:'❄️',text:'Снег',cond:'снег'},
-    {icon:'🌫️',text:'Туман',cond:'туман'},
-    {icon:'💨',text:'Ветрено',cond:'ветрено'},
-    {icon:'🌙',text:'Ясная ночь',cond:'ясная ночь'}
-];
-
-var fbBox=document.getElementById('fb-buttons');
-feedbackOptions.forEach(function(o){
-    var b=document.createElement('button');
-    b.textContent=o.icon+' '+o.text;
-    b.style.cssText='padding:0.6rem;border:2px solid #ddd;background:#fff;border-radius:12px;cursor:pointer;font-size:13px;text-align:center;transition:all 0.15s;';
-    b.onmouseenter=function(){this.style.borderColor='var(--accent,#2563EB)';this.style.background='rgba(37,99,235,0.05)';};
-    b.onmouseleave=function(){this.style.borderColor='#ddd';this.style.background='#fff';};
-    b.onclick=function(){
-        submitFeedback(o.text);
-    };
-    fbBox.appendChild(b);
-});
-
-function openFeedback(){
-    document.getElementById('feedback-modal').style.display='flex';
-    document.getElementById('fb-form').style.display='block';
-    document.getElementById('fb-thanks').style.display='none';
-}
-function closeFeedback(){
-    document.getElementById('feedback-modal').style.display='none';
-}
-function submitFeedback(cond){
-    var cityName = (cur().city||city).split(',')[0];
-    var fb = JSON.parse(localStorage.getItem('weather_feedback')||'[]');
-    fb.push({city:cityName,condition:cond,time:new Date().toISOString()});
-    localStorage.setItem('weather_feedback',JSON.stringify(fb.slice(-20)));
-    document.getElementById('fb-form').style.display='none';
-    document.getElementById('fb-thanks').style.display='block';
-    setTimeout(closeFeedback,1500);
-}
-document.getElementById('feedback-modal').addEventListener('click',function(e){
-    if(e.target===this) closeFeedback();
-});
+(function(){
+    var opts=[{e:'☀️',t:'Солнечно'},{e:'⛅',t:'Облачно'},{e:'🌧️',t:'Дождь'},{e:'⛈️',t:'Гроза'},{e:'❄️',t:'Снег'},{e:'💨',t:'Ветрено'},{e:'🌫️',t:'Туман'},{e:'🌙',t:'Ясная ночь'}];
+    var g=document.getElementById('fb-grid');
+    opts.forEach(function(o){
+        var b=document.createElement('button');
+        b.textContent=o.e+' '+o.t;
+        b.setAttribute('data-cond',o.t);
+        b.style.cssText='padding:0.6rem 0.5rem;border:2px solid #e5e7eb;background:#fafafa;border-radius:14px;cursor:pointer;font-size:13px;font-weight:500;color:#111;transition:0.15s;';
+        b.onmouseenter=function(){this.style.borderColor='#2563EB';this.style.background='#eff6ff';};
+        b.onmouseleave=function(){this.style.borderColor='#e5e7eb';this.style.background='#fafafa';};
+        b.onclick=function(){
+            var city=(function(){try{var d=JSON.parse(document.getElementById('weather-data').textContent||'{}');return(d.current&&d.current.city)?d.current.city.split(',')[0]:'';}catch(e){return'';}})();
+            var fb=JSON.parse(localStorage.getItem('weather_fb')||'[]');
+            fb.push({city:city||'неизвестно',cond:this.getAttribute('data-cond'),time:new Date().toISOString()});
+            localStorage.setItem('weather_fb',JSON.stringify(fb.slice(-30)));
+            document.getElementById('fb-grid').style.display='none';
+            document.getElementById('fb-ok').style.display='block';
+            setTimeout(function(){document.getElementById('fb-overlay').style.display='none';document.getElementById('fb-grid').style.display='grid';document.getElementById('fb-ok').style.display='none';},1500);
+        };
+        g.appendChild(b);
+    });
+})();
 </script>
 
 <style>
