@@ -847,7 +847,6 @@ body.theme-nothing input { border-radius:0!important; }
             WDATA.weekMin = Math.round(Math.min.apply(null,d.temperature_2m_min));
             WDATA.weekMax = Math.round(Math.max.apply(null,d.temperature_2m_max));
             cityRaw = cleanCity; city = cleanCity; cityPrep = declineCity(cleanCity);
-            setupVideo();
             const cond = WMO_TEXT[c.weather_code] || 'Неизвестно';
             const icon = WMO[c.weather_code] || 'cloud';
             const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -859,6 +858,7 @@ body.theme-nothing input { border-radius:0!important; }
             document.title = 'Погода в ' + cityName.split(',')[0];
             updateTourBtn(cityName.split(',')[0]);
             hideLoading();
+            try { setupVideo(); } catch(e) {}
             setTimeout(initLucide, 50);
         }
 
