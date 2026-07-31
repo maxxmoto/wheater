@@ -163,6 +163,8 @@
         body.theme-nothing #autocomplete-list { border-radius:0!important; }
         body.theme-nothing .nt-hero-grid { display:grid; grid-template-columns:1fr; gap:1.5rem; }
         @media (min-width:768px) { body.theme-nothing .nt-hero-grid { grid-template-columns:1fr 1fr; } }
+        @media (min-width:768px) { .ad-wrap { flex-direction:row!important; } .ad-desktop { display:block!important; width:180px!important; } }
+        @media (max-width:767px) { .ad-desktop { display:block!important; max-width:100%!important; margin-bottom:0.5rem; } .ad-desktop video { max-height:200px; object-fit:cover; } }
     </style>
 </head>
 <body class="theme-glass">
@@ -199,6 +201,11 @@
 
     <main style="max-width:64rem; margin:0 auto; padding:0.5rem 1.5rem 5rem; display:flex; flex-direction:column; gap:1.5rem;">
         <!-- Current Weather Header -->
+        <div class="ad-wrap" style="display:flex; gap:1.5rem; align-items:flex-start; flex-direction:column;">
+            <div class="ad-desktop" style="flex-shrink:0; width:100%; max-width:180px; display:none;">
+                <video id="ad-video" muted playsinline preload="auto" style="width:100%;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.1);" src="static/ad.mp4"></video>
+            </div>
+            <div style="flex:1; min-width:0;">
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4rem 0 3rem; text-align:center; position:relative; overflow:hidden; border-radius:32px; background:rgba(255,255,255,0.2);">
             <video id="g-video" autoplay muted loop playsinline webkit-playsinline preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45;z-index:0;pointer-events:none;border-radius:32px;"></video>
             <div style="position:relative;z-index:1;">
@@ -320,9 +327,10 @@
                             <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
                                 <div style="font-size:1.25rem; font-weight:600; color:var(--text-heading); line-height:1.1;">{{ data.details.wind.speed }}</div>
                                 <div style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--muted); letter-spacing:0.5px;">м/с</div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+            </div>
+            </div>
+        </div>
                     <div style="text-align:center; font-size:13px; color:var(--text); border-top:1px solid rgba(0,0,0,0.04); padding-top:0.75rem;">
                         {{ data.details.wind.direction }} {{ data.details.wind.degree }}°
                         {% if data.details.wind.gust and data.details.wind.gust > 0 %}· порывы {{ data.details.wind.gust }} м/с{% endif %}
@@ -461,7 +469,9 @@ body.theme-nothing input { border-radius:0!important; }
 .nt-card { background:#fff; border:2px solid #000; box-shadow:4px 4px 0 0 #000; }
 .nt-card:hover { transform:translate(2px,2px); box-shadow:2px 2px 0 0 #000; }
 .nt-hero-grid { display:grid; grid-template-columns:1fr; gap:1.5rem; }
-@media (min-width:768px) { .nt-hero-grid { grid-template-columns:1fr 1fr; } }
+        @media (min-width:768px) { .ad-desktop { display:block!important; } }
+        @media (max-width:767px) { .ad-desktop { display:block!important; max-width:100%!important; margin-bottom:0.5rem; } }
+        @media (max-width:767px) { .ad-desktop video { max-height:200px; object-fit:cover; } }
 .nt-hero-card { padding:2rem 3rem; min-height:350px; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; }
 .nt-hero-corner { position:absolute; top:0; right:0; width:8rem; height:8rem; border-left:2px solid #000; border-bottom:2px solid #000; display:flex; align-items:center; justify-content:center; background:#F8F8F8; }
 .nt-hero-corner i { width:4rem; height:4rem; color:#E60000; }
@@ -1073,6 +1083,14 @@ function setupVideo(){
 }
 setupVideo();
 window.setupVideo = setupVideo;
+
+(function(){
+    var ad = document.getElementById('ad-video');
+    if(ad){
+        setTimeout(function(){ ad.play().catch(function(){}); }, 500);
+        ad.addEventListener('ended', function(){ ad.currentTime = ad.duration - 0.01; ad.pause(); });
+    }
+})();
 
 function declineCity(name){
     if(!name) return name;
