@@ -857,6 +857,11 @@ var TOURS = {
         localImgs:['static/kzn1.jpg','static/kzn2.jpg','static/kzn3.jpg'],
         localTitles:['Дворец земледельцев','Мечеть Кул-Шариф','Центр семьи "Казан"']
     },
+    'Городской округ Казань':{
+        hero:'static/kzn_bg.jpg', title:'Казань', subtitle:'Третья столица России', timeline:[{year:'1005',text:'Основание.'}],
+        localImgs:['static/kzn1.jpg','static/kzn2.jpg','static/kzn3.jpg'],
+        localTitles:['Дворец земледельцев','Мечеть Кул-Шариф','Центр семьи "Казан"']
+    },
     'Йошкар-Ола':{
         hero:'static/yo_bg.jpg',
         title:'Йошкар-Ола',
@@ -921,7 +926,7 @@ function openTour(){
         lm.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;';
         var rots=['-3deg','2deg','-1deg'];
         t.localImgs.forEach(function(src,i){
-            lm.innerHTML+='<div style="width:200px;background:#fff;padding:12px 12px 40px;box-shadow:0 8px 24px rgba(0,0,0,0.12);transform:rotate('+rots[i]+');border:1px solid #e5e5e5;"><img src="'+src+'" style="width:100%;border-radius:4px;display:block;"><div style="font-family:Georgia,serif;font-style:italic;font-size:11px;color:#6B7280;text-align:center;margin-top:8px;">'+(t.localTitles[i]||'')+'</div></div>';
+            lm.innerHTML+='<div style="width:200px;background:#fff;padding:12px 12px 40px;box-shadow:0 8px 24px rgba(0,0,0,0.12);transform:rotate('+rots[i]+');border:1px solid #e5e5e5;"><img src="'+src+'" loading="lazy" style="width:100%;border-radius:4px;display:block;"><div style="font-family:Georgia,serif;font-style:italic;font-size:11px;color:#6B7280;text-align:center;margin-top:8px;">'+(t.localTitles[i]||'')+'</div></div>';
         });
     } else if(t.landmarks){
         lm.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:1rem;';
@@ -1011,7 +1016,9 @@ function setupVideo(){
     var c = cur();
     var cond = String(c.condition || '').toLowerCase();
     var src = 'static/sun.mp4';
-    var isNight = /moon|ноч|вечер/.test(cond) || (WDATA.hourly && WDATA.hourly[0] && WDATA.hourly[0].icon && WDATA.hourly[0].icon.indexOf('moon')>=0);
+    var now = new Date();
+    var hour = now.getHours();
+    var isNight = hour >= 21 || hour < 6 || /moon|ноч|вечер/.test(cond) || (WDATA.hourly && WDATA.hourly[0] && WDATA.hourly[0].icon && WDATA.hourly[0].icon.indexOf('moon')>=0);
     var isRain = /дожд|лив|гроз|снег|rain|storm|snow|град/.test(cond);
     var isClear = /ясно|солнечн|clear|sunny|малооблачн/.test(cond);
     if(isNight) src = 'static/moon.mp4';
@@ -1354,7 +1361,7 @@ window.toggleChat=function(){
     if(p.style.display==='none'){p.style.display='flex';b.style.display='none';setTimeout(function(){document.getElementById('ai-input').focus();},50);}
     else{p.style.display='none';b.style.display='flex';}
 };
-addMsg('Привет! Я погодный ИИ в '+cityPrep+'. Спроси про прогноз, что надеть, магнитные бури или есть ли риски.','ai');
+addMsg('Привет! Я погодный ИИ. Спроси про прогноз, что надеть, магнитные бури или есть ли риски.','ai');
 setTimeout(initLucide, 100);
 
 (function initTour(){
