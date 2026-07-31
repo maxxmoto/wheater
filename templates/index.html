@@ -649,7 +649,7 @@ body.theme-nothing input { border-radius:0!important; }
                 (d.features||[]).forEach(function(f){
                     var p = f.properties;
                     var name = p.city || p.name || '';
-                    if(!name || name.indexOf('Городской округ') >= 0 || name.indexOf('район') >= 0) return;
+                    if(!name || name.toLowerCase().indexOf('городской округ')>=0 || name.indexOf('район')>=0 || name.indexOf('поселение')>=0 || name.indexOf('сельское')>=0) return;
                     var key = name.toLowerCase();
                     if(seen[key]) return;
                     seen[key] = 1;
@@ -721,10 +721,10 @@ body.theme-nothing input { border-radius:0!important; }
 
         function updateTourBtn(c){
             var ts = document.getElementById('tour-section');
-            var tn = document.getElementById('tour-city-name');
+            var tn = document.getElementById('tour-city-name-declined');
             if(TOURS[c]){
                 if(ts) ts.style.display = 'block';
-                if(tn) tn.textContent = c;
+                if(tn) tn.textContent = declineCity(c);
             } else {
                 if(ts) ts.style.display = 'none';
             }
@@ -774,7 +774,7 @@ body.theme-nothing input { border-radius:0!important; }
     <button onclick="document.getElementById('fb-overlay').style.display='flex'" style="background:none;border:none;color:#2563EB;cursor:pointer;font-weight:700;font-size:13px;text-decoration:underline;">Помогите нам стать лучше →</button>
 </div>
 <div id="tour-section" style="display:none;text-align:center;padding:0.5rem 1rem 1rem;max-width:64rem;margin:0 auto;">
-    <button onclick="openTour()" style="background:linear-gradient(135deg,#2563EB,#7C3AED);color:#fff;border:none;border-radius:16px;padding:0.85rem 2rem;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(37,99,235,0.3);transition:transform 0.2s;">🏛 Отправьтесь в онлайн-экскурсию по <span id="tour-city-name"></span></button>
+    <button onclick="openTour()" style="background:linear-gradient(135deg,#2563EB,#7C3AED);color:#fff;border:none;border-radius:16px;padding:0.85rem 2rem;cursor:pointer;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(37,99,235,0.3);transition:transform 0.2s;">🏛 Отправьтесь в онлайн-экскурсию по <span id="tour-city-name-declined"></span></button>
 </div>
 
 <div id="tour-overlay" onclick="if(event.target===this)closeTour()" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.6);overflow-y:auto;padding:2rem 1rem;">
@@ -845,7 +845,7 @@ var TOURS = {
         localTitles:['Дворец земледельцев','Мечеть Кул-Шариф','Центр семьи "Казан"']
     },
     'Йошкар-Ола':{
-        hero:'https://images.unsplash.com/photo-1596510915261-9b8c6f32ed2e?w=800&q=80',
+        hero:'static/yo_bg.jpg',
         title:'Йошкар-Ола',
         subtitle:'Красный город · основан в 1584 году · 280 тыс. жителей',
         timeline:[
@@ -856,11 +856,26 @@ var TOURS = {
             {year:'2011',text:'Открытие набережной Брюгге — архитектура фламандского стиля на Волге.'},
             {year:'2025',text:'Город-сказка с европейской архитектурой. Башни, часы, фонтаны — уникальный облик.'}
         ],
+        localImgs:['static/yo1.webp','static/yo2.jpg','static/yo3.webp'],
+        localTitles:['Набережная Брюгге','Площадь Оболенского-Ноготкова','Кукольный театр']
+    },
+    'Нижний Новгород':{
+        hero:'https://images.unsplash.com/photo-1558631017-83a7b97f76d4?w=800&q=80',
+        title:'Нижний Новгород',
+        subtitle:'Столица Поволжья · основан в 1221 году · 1.2 млн жителей',
+        timeline:[
+            {year:'1221',text:'Основание великим князем Юрием Всеволодовичем как крепость на слиянии Оки и Волги.'},
+            {year:'1817',text:'Перенос Макарьевской ярмарки в Нижний. Город становится "карманом России" — главным торговым центром.'},
+            {year:'1932',text:'Переименован в Горький. Центр оборонной промышленности, закрытый для иностранцев.'},
+            {year:'1990',text:'Возвращает историческое имя. Открытие города для мира.'},
+            {year:'2018',text:'Чемпионат мира по футболу. Построен стадион на Стрелке, реконструирована набережная.'},
+            {year:'2025',text:'Кремль, Чкаловская лестница, канатная дорога — один из красивейших городов России.'}
+        ],
         landmarks:[
-            {img:'https://images.unsplash.com/photo-1596733848192-f2c5aa6ae405?w=400&q=70',title:'Набережная Брюгге',desc:'Фламандская архитектура на Волге. Разноцветные дома, башенки, фонтаны.'},
-            {img:'https://images.unsplash.com/photo-1570719052754-b10899bf4a3c?w=400&q=70',title:'Царевококшайский кремль',desc:'Восстановленная крепость. Царь-пушка, интерактивный музей орудий.'},
-            {img:'https://images.unsplash.com/photo-1596613594131-bb0df1601d08?w=400&q=70',title:'Кукольный театр',desc:'Сказочный замок в центре. Один из лучших театров кукол в России.'},
-            {img:'https://images.unsplash.com/photo-1566395786321-14fd8457ae13?w=400&q=70',title:'Площадь Оболенского-Ноготкова',desc:'Сердце города. Часы со сценой из Библии, движущиеся фигуры.'}
+            {img:'https://images.unsplash.com/photo-1596573753423-77abfd4fa1e0?w=400&q=70',title:'Нижегородский Кремль',desc:'Каменная крепость XVI века. 13 башен, вечный огонь, захватывающий вид на Волгу.'},
+            {img:'https://images.unsplash.com/photo-1549145314-0d9b3f72c0e4?w=400&q=70',title:'Чкаловская лестница',desc:'560 ступеней от Кремля до Волги. Самая длинная лестница России в форме восьмёрки.'},
+            {img:'https://images.unsplash.com/photo-1596397840424-7ed8d73f6e3c?w=400&q=70',title:'Стрелка Оки и Волги',desc:'Место слияния двух великих рек. Собор Александра Невского, стадион, панорамные виды.'},
+            {img:'https://images.unsplash.com/photo-1570719053022-7c2ca7f92ac6?w=400&q=70',title:'Канатная дорога',desc:'Переправа через Волгу длиной 3.6 км. Самый длинный безопорный пролёт в Европе над водой.'}
         ]
     }
 };
@@ -869,7 +884,7 @@ var TOURS = {
     var c = getTourCity();
     if(TOURS[c]){
         document.getElementById('tour-section').style.display='block';
-        document.getElementById('tour-city-name').textContent=c;
+        document.getElementById('tour-city-name-declined').textContent=declineCity(c);
     }
 })();
 
@@ -1042,7 +1057,8 @@ function declineCity(name){
         'нижний новгород':'Нижнем Новгороде','ростов-на-дону':'Ростове-на-Дону',
         'тольятти':'Тольятти','самара':'Самаре','уфа':'Уфе','орел':'Орле',
         'курск':'Курске','омск':'Омске','новосибирск':'Новосибирске',
-        'екатеринбург':'Екатеринбурге','вологда':'Вологде','киров':'Кирове'
+        'екатеринбург':'Екатеринбурге','вологда':'Вологде','киров':'Кирове',
+        'нижний новгород':'Нижнем Новгороде','йошкар-ола':'Йошкар-Оле'
     };
     if(special[lower]) return special[lower];
     if(/[иоуэю]$/.test(lower)) return n;
