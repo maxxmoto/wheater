@@ -193,7 +193,7 @@
     <main style="max-width:64rem; margin:0 auto; padding:0.5rem 1.5rem 5rem; display:flex; flex-direction:column; gap:1.5rem;">
         <!-- Current Weather Header -->
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4rem 0 3rem; text-align:center; position:relative; overflow:hidden; border-radius:32px; background:rgba(255,255,255,0.2);">
-            <video id="g-video" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45;z-index:0;pointer-events:none;border-radius:32px;"></video>
+            <video id="g-video" autoplay muted loop playsinline webkit-playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45;z-index:0;pointer-events:none;border-radius:32px;"><source src="" type="video/mp4"></video>
             <div style="position:relative;z-index:1;">
             <h1 class="cur-city" id="g-city" style="font-size:3rem; font-weight:400; letter-spacing:-0.03em; color:var(--text-heading); margin-bottom:0.25rem;">
                 Москва
@@ -688,7 +688,7 @@ body.theme-nothing input { border-radius:0!important; }
 <div class="nt-content">
 <div class="nt-hero-grid">
 <div class="nt-card nt-hero-card">
-<video id="n-video" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.25;z-index:0;pointer-events:none;"></video>
+<video id="n-video" autoplay muted loop playsinline webkit-playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.25;z-index:0;pointer-events:none;"><source src="" type="video/mp4"></video>
 <div style="position:relative;z-index:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;">
 <div class="nt-hero-corner"><i data-lucide="sun" stroke-width="1.5"></i></div>
 <div class="nt-hero-badge" id="n-cond">Преимущественно солнечно</div>
@@ -952,7 +952,12 @@ var cityPrep = cityRaw ? declineCity(cityRaw) : 'этом городе';
     else if(isRain) src = 'static/rain.mp4';
     else if(isClear) src = 'static/fun-sun.mp4';
     [document.getElementById('g-video'), document.getElementById('n-video')].forEach(function(v){
-        if(v) v.src = src;
+        if(!v) return;
+        var s = v.querySelector('source');
+        if(s) s.src = src;
+        else v.src = src;
+        v.load();
+        v.play().catch(function(){});
     });
 })();
 
