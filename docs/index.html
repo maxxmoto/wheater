@@ -166,6 +166,9 @@
     </style>
 </head>
 <body class="theme-glass">
+<div id="g-loading" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,0.6);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;">
+    <div style="padding:1.5rem 2rem;background:var(--card-bg,#fff);border:2px solid var(--card-border,#000);box-shadow:var(--card-shadow,4px 4px 0 0 #000);font-family:'Space Mono',monospace;font-size:13px;font-weight:700;text-transform:uppercase;">Загрузка...</div>
+</div>
 
 <div class="theme-glass-content">
     <!-- Navigation / Search -->
@@ -189,18 +192,18 @@
     <main style="max-width:64rem; margin:0 auto; padding:0.5rem 1.5rem 5rem; display:flex; flex-direction:column; gap:1.5rem;">
         <!-- Current Weather Header -->
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 0; text-align:center;">
-            <h1 class="cur-city" style="font-size:3rem; font-weight:400; letter-spacing:-0.03em; color:var(--text-heading); margin-bottom:0.25rem;">
+            <h1 class="cur-city" id="g-city" style="font-size:3rem; font-weight:400; letter-spacing:-0.03em; color:var(--text-heading); margin-bottom:0.25rem;">
                 Москва
             </h1>
-            <div class="cur-temp" style="font-size:96px; font-weight:300; line-height:1; letter-spacing:-0.04em; color:var(--text-heading); margin-left:1.5rem; position:relative;">
+            <div class="cur-temp" id="g-temp" style="font-size:96px; font-weight:300; line-height:1; letter-spacing:-0.04em; color:var(--text-heading); margin-left:1.5rem; position:relative;">
                 24°
             </div>
-            <p style="font-size:1.25rem; font-weight:500; color:var(--text); margin-top:0.5rem;">
+            <p style="font-size:1.25rem; font-weight:500; color:var(--text); margin-top:0.5rem;" id="g-cond">
                 Преимущественно солнечно
             </p>
             <div style="display:flex; gap:1rem; margin-top:0.5rem; font-size:1.125rem; font-weight:500; color:var(--muted);">
-                <span>Макс.: 26°</span>
-                <span>Мин.: 14°</span>
+                <span>Макс.: <b id="g-high">26</b>°</span>
+                <span>Мин.: <b id="g-low">14</b>°</span>
             </div>
         </div>
 
@@ -668,7 +671,7 @@ body.theme-nothing input { border-radius:0!important; }
 <div id="autocomplete-list-nt" class="nt-autocomplete"></div>
 
 <header class="nt-header">
-<div class="nt-badge"><i data-lucide="map-pin" class="nt-badge-icon"></i><span>Москва</span></div>
+<div class="nt-badge"><i data-lucide="map-pin" class="nt-badge-icon"></i><span id="n-city">Москва</span></div>
 <form action="/" method="GET" class="nt-search" autocomplete="off">
 <input type="text" name="city" id="city-input-nt" class="nt-search-input" placeholder="ENTER LOCATION..." value="">
 <button type="submit" class="nt-search-btn"><i data-lucide="search" class="nt-search-btn-icon"></i></button>
@@ -682,32 +685,32 @@ body.theme-nothing input { border-radius:0!important; }
 <div class="nt-hero-grid">
 <div class="nt-card nt-hero-card">
 <div class="nt-hero-corner"><i data-lucide="sun" stroke-width="1.5"></i></div>
-<div class="nt-hero-badge">Преимущественно солнечно</div>
-<div class="nt-hero-temp">24°</div>
-<div class="nt-hero-hl"><span>H: 26°</span><span class="nt-hero-l">L: 14°</span></div>
+<div class="nt-hero-badge" id="n-cond">Преимущественно солнечно</div>
+<div class="nt-hero-temp" id="n-temp">24°</div>
+<div class="nt-hero-hl"><span>H: <b id="n-high">26</b>°</span><span class="nt-hero-l">L: <b id="n-low">14</b>°</span></div>
 </div>
 
 <div class="nt-hero-grid nt-metrics-grid">
 <div class="nt-card nt-metric">
 <div class="nt-metric-header"><span class="nt-metric-label">WIND</span><i data-lucide="wind"></i></div>
 <div class="nt-metric-body"><div class="nt-compass"><i data-lucide="navigation" class="nt-compass-icon"></i></div></div>
-<div class="nt-metric-footer"><span class="nt-metric-val">4.2</span><span class="nt-metric-unit">M/S</span></div>
+<div class="nt-metric-footer"><span class="nt-metric-val" id="n-wind">4.2</span><span class="nt-metric-unit">M/S</span></div>
 </div>
 
 <div class="nt-card nt-metric">
 <div class="nt-metric-header"><span class="nt-metric-label">HUMID</span><i data-lucide="droplets"></i></div>
-<div class="nt-metric-val-lg">45%</div>
+<div class="nt-metric-val-lg" id="n-hum">45%</div>
 <div class="nt-metric-footer"><span class="nt-metric-sub">NORMAL</span></div>
 </div>
 
 <div class="nt-card nt-metric">
 <div class="nt-metric-header"><span class="nt-metric-label">FEELS</span><i data-lucide="thermometer"></i></div>
-<div class="nt-metric-val-lg nt-metric-val-red">23°</div>
+<div class="nt-metric-val-lg nt-metric-val-red" id="n-feels">23°</div>
 </div>
 
 <div class="nt-card nt-metric nt-metric-uv">
 <div class="nt-metric-header"><span class="nt-metric-label-uv">UV IDX</span></div>
-<div class="nt-metric-val-lg nt-metric-val-white">5</div>
+<div class="nt-metric-val-lg nt-metric-val-white" id="n-uv">5</div>
 <div class="nt-uv-bars"><div class="nt-uv-bar" style="background:#fff;"></div><div class="nt-uv-bar" style="background:#fff;"></div><div class="nt-uv-bar" style="background:#fff;"></div><div class="nt-uv-bar" style="background:#fff;"></div><div class="nt-uv-bar" style="background:#fff;"></div></div>
 </div>
 </div>
@@ -760,19 +763,82 @@ body.theme-nothing input { border-radius:0!important; }
 
         function updateActive(items) { items.forEach((el, i) => el.classList.toggle('active', i === cf)); if (cf > -1 && items[cf]) items[cf].scrollIntoView({ block: 'nearest' }); }
 
+        const GEOKEY = 'acd79c1eab9249aebd6287e34e67f703';
+        const WAKEY = '0426384116734bb4a94183926263007';
+        const IS_STATIC = location.pathname.includes('/wheater/');
+        const BACKEND = !IS_STATIC;
+
         function fetchCities(q, ac) {
-            fetch('/api/cities?q=' + encodeURIComponent(q)).then(r => r.json()).then(d => {
-                ac.l.innerHTML = ''; cf = -1;
-                if (!d.cities || d.cities.length === 0) { ac.l.style.display = 'none'; return; }
-                d.cities.forEach(c => {
-                    const div = document.createElement('div'); div.className = 'ac-item';
-                    div.innerHTML = '<span>' + escHtml(c.name) + '</span><span class="ac-region">' + escHtml(c.region||'') + '</span>';
-                    div.addEventListener('mousedown', function(e) { e.preventDefault(); ac.i.value = c.name; ac.l.style.display = 'none'; window.location.href = '/?city=' + encodeURIComponent(c.name); });
-                    ac.l.appendChild(div);
+            fetch('/api/cities?q=' + encodeURIComponent(q))
+                .then(r => { if (!r.ok) throw 0; return r.json(); })
+                .catch(() => fetch('https://api.geoapify.com/v1/geocode/autocomplete?text=' + encodeURIComponent(q) + '&apiKey=' + GEOKEY + '&lang=ru&limit=8&type=city&filter=countrycode:ru').then(r => r.json()).then(d => ({ cities: d.features.map(f => { const p = f.properties; return { name: p.city || p.name || '', region: p.state || '', lat: p.lat, lon: p.lon }; }).filter(c => c.name) })))
+                .then(d => {
+                    ac.l.innerHTML = ''; cf = -1;
+                    if (!d.cities || d.cities.length === 0) { ac.l.style.display = 'none'; return; }
+                    d.cities.forEach(c => {
+                        const div = document.createElement('div'); div.className = 'ac-item';
+                        div.innerHTML = '<span>' + escHtml(c.name) + '</span><span class="ac-region">' + escHtml(c.region||'') + '</span>';
+                        div.addEventListener('mousedown', function(e) { e.preventDefault(); ac.i.value = c.name; ac.l.style.display = 'none'; doSearch(c.name); });
+                        ac.l.appendChild(div);
+                    });
+                    ac.l.style.display = 'block';
                 });
-                ac.l.style.display = 'block';
-            });
         }
+
+        function doSearch(city) {
+            if (BACKEND) {
+                window.location.href = '?city=' + encodeURIComponent(city);
+                return;
+            }
+            showLoading();
+            fetch('https://api.geoapify.com/v1/geocode/search?text=' + encodeURIComponent(city) + '&apiKey=' + GEOKEY + '&lang=ru&limit=1')
+                .then(r => r.json())
+                .then(g => {
+                    if (!g.features || !g.features.length) { alert('Город не найден'); hideLoading(); return; }
+                    const p = g.features[0].properties;
+                    const lat = p.lat, lon = p.lon;
+                    const cityName = (p.city || p.name) + (p.country ? ', ' + p.country : '');
+                    return fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto').then(r => r.json()).then(w => ({ w, cityName }));
+                })
+                .then(({ w, cityName }) => renderOpenMeteo(w, cityName))
+                .catch(() => { alert('Ошибка загрузки погоды'); hideLoading(); });
+        }
+
+        function showLoading() { const el = document.getElementById('g-loading'); if (el) { el.style.display = 'flex'; } }
+        function hideLoading() { const el = document.getElementById('g-loading'); if (el) { el.style.display = 'none'; } }
+
+        const WMO = {
+            0:'sun',1:'sun',2:'cloud-sun',3:'cloud',45:'cloud',48:'cloud',
+            51:'cloud-rain',53:'cloud-rain',55:'cloud-rain',56:'cloud-rain',57:'cloud-rain',
+            61:'cloud-rain',63:'cloud-rain',65:'cloud-rain',66:'cloud-rain',67:'cloud-rain',
+            71:'snowflake',73:'snowflake',75:'snowflake',77:'snowflake',
+            80:'cloud-rain',81:'cloud-rain',82:'cloud-rain',85:'snowflake',86:'snowflake',
+            95:'cloud-lightning',96:'cloud-lightning',99:'cloud-lightning'
+        };
+        const WMO_TEXT = {0:'Ясно',1:'Преимущественно ясно',2:'Переменная облачность',3:'Пасмурно',45:'Туман',48:'Изморозь',51:'Мелкий дождь',61:'Дождь',63:'Дождь',65:'Сильный дождь',71:'Снег',73:'Снег',75:'Сильный снег',80:'Ливень',81:'Ливень',82:'Сильный ливень',85:'Снегопад',86:'Снегопад',95:'Гроза',96:'Гроза с градом',99:'Сильная гроза'};
+
+        function renderOpenMeteo(w, cityName) {
+            const c = w.current, d = w.daily;
+            const cond = WMO_TEXT[c.weather_code] || 'Неизвестно';
+            const icon = WMO[c.weather_code] || 'cloud';
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            set('g-city', cityName); set('g-temp', Math.round(c.temperature_2m) + '°'); set('g-cond', cond.charAt(0).toUpperCase() + cond.slice(1));
+            set('g-high', Math.round(d.temperature_2m_max[0])); set('g-low', Math.round(d.temperature_2m_min[0]));
+            set('n-city', cityName); set('n-temp', Math.round(c.temperature_2m) + '°'); set('n-cond', cond.toUpperCase());
+            set('n-high', Math.round(d.temperature_2m_max[0])); set('n-low', Math.round(d.temperature_2m_min[0]));
+            set('n-wind', (c.wind_speed_10m/3.6).toFixed(1)); set('n-hum', c.relative_humidity_2m + '%'); set('n-feels', Math.round(c.apparent_temperature) + '°');
+            document.title = 'Погода в ' + cityName.split(',')[0];
+            hideLoading();
+            setTimeout(initLucide, 50);
+        }
+
+        document.addEventListener('submit', function(e) {
+            const t = e.target;
+            if (t.id !== 'search-form' && !t.classList.contains('nt-search')) return;
+            e.preventDefault();
+            const input = t.querySelector('input[name="city"]');
+            if (input && input.value.trim()) doSearch(input.value.trim());
+        });
 
         function escHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
