@@ -2,48 +2,93 @@
 <html lang="ru" prefix="og: https://ogp.me/ns#">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0">
-    <title>Погода в Москва — текущая температура, прогноз на 8 дней, магнитное поле</title>
-    <meta name="description" content="Точный прогноз погоды в Москва. Температура воздуха, осадки, ветер, влажность, УФ-индекс, магнитное поле. Почасовой прогноз на 24 часа и на 8 дней. Давление с учётом высоты над уровнем моря.">
-    <meta name="keywords" content="погода Москва, прогноз погоды, температура, осадки, ветер, магнитное поле, атмосферное давление, метеозависимость">
-    <meta name="robots" content="index,follow">
-    <meta name="author" content="Weather PWA">
-    <meta name="language" content="ru">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
 
+    <title>Погода Москва — точный прогноз на сегодня и 8 дней, магнитное поле, давление</title>
+    <meta name="description" content="Погода в Москва на сегодня и 8 дней. Температура 24°C, Преимущественно солнечно. Ветер 4.2 м/с, влажность 45%. УФ-индекс, магнитное поле Kp, атмосферное давление с нормой для региона. Почасовой прогноз на 24 часа.">
+    <meta name="keywords" content="погода, прогноз погоды, Москва, температура, осадки, ветер, магнитное поле, атмосферное давление, метеозависимость, УФ-индекс, погода на неделю">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <meta name="googlebot" content="index,follow">
+    <meta name="yandex" content="index,follow">
+    <meta name="author" content="WeatherMind">
+    <meta name="language" content="ru">
+    <meta name="geo.placename" content="Москва, Россия">
+    <meta name="geo.region" content="RU">
     <link rel="canonical" href="https://maxxmoto.github.io/wheater/">
+    <link rel="alternate" hreflang="ru" href="https://maxxmoto.github.io/wheater/">
+
     <link rel="icon" type="image/png" sizes="16x16" href="static/favicons/icons8-погода-ios-27-filled-16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="static/favicons/icons8-погода-ios-27-filled-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="static/favicons/icons8-погода-ios-27-filled-192.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="static/favicons/icons8-погода-ios-27-filled-57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="static/favicons/icons8-погода-ios-27-filled-72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="static/favicons/icons8-погода-ios-27-filled-114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="static/favicons/icons8-погода-ios-27-filled-120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="static/favicons/icons8-погода-ios-27-filled-144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="static/favicons/icons8-погода-ios-27-filled-152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="static/favicons/icons8-погода-ios-27-filled-180.png">
+    <link rel="mask-icon" color="#2563EB" href="static/favicons/icons8-погода-ios-27-filled-192.png">
+    <meta name="apple-mobile-web-app-title" content="Погода">
+    <meta name="msapplication-TileImage" content="static/favicons/icons8-погода-ios-27-filled-144.png">
+    <meta name="msapplication-TileColor" content="#2563EB">
     <link rel="manifest" href="static/manifest.json">
-    <meta name="theme-color" content="#2563EB">
+    <meta name="theme-color" content="#2563EB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="application-name" content="Погода">
     <meta name="format-detection" content="telephone=no">
 
-    <meta property="og:title" content="Погода в Москва — текущая температура 24°C">
-    <meta property="og:description" content="Прогноз погоды в Москва: Преимущественно солнечно, 24°C. Ветер 4.2 м/с, влажность 45%.">
+    <meta property="og:title" content="Погода в Москва — 24°C, Преимущественно солнечно">
+    <meta property="og:description" content="Точный прогноз на сегодня и 8 дней. Ветер 4.2 м/с, влажность 45%, давление 755 мм. УФ-индекс, магнитное поле. Подробный почасовой прогноз.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://maxxmoto.github.io/wheater/">
     <meta property="og:locale" content="ru_RU">
-    <meta property="og:site_name" content="Погода">
-    <meta property="og:image" content="https://maxxmoto.github.io/wheater/static/favicons/icons8-погода-ios-27-filled-192.png">
-    <meta property="og:image:width" content="192">
-    <meta property="og:image:height" content="192">
+    <meta property="og:site_name" content="WeatherMind Погода">
+    <meta property="og:image" content="https://maxxmoto.github.io/wheater/static/favicons/icons8-погода-ios-27-filled-512.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="Прогноз погоды в Москва">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:country_name" content="Россия">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Погода в Москва — 24°C">
-    <meta name="twitter:description" content="Преимущественно солнечно. Ветер 4.2 м/с, влажность 45%.">
+    <meta name="twitter:site" content="@weathermind">
+    <meta name="twitter:title" content="Погода Москва — 24°C">
+    <meta name="twitter:description" content="Преимущественно солнечно. Ветер 4.2 м/с, влажность 45%. Прогноз на 8 дней.">
     <meta name="twitter:image" content="https://maxxmoto.github.io/wheater/static/favicons/icons8-погода-ios-27-filled-192.png">
+    <meta name="twitter:image:alt" content="Погода в Москва">
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Погода",
+      "@type": "WebApplication",
+      "name": "WeatherMind Погода",
       "url": "https://maxxmoto.github.io/wheater/",
-      "description": "Прогноз погоды с магнитным полем, давлением и детальным прогнозом по времени суток"
+      "description": "Точный прогноз погоды с магнитным полем, давлением и почасовым прогнозом на 24 часа и 8 дней. Поддержка всех городов России.",
+      "applicationCategory": "WeatherApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "RUB" },
+      "author": { "@type": "Organization", "name": "WeatherMind" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "WeatherMind Погода",
+      "url": "https://maxxmoto.github.io/wheater/",
+      "description": "Прогноз погоды с магнитным полем, давлением и детальным прогнозом по времени суток",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://maxxmoto.github.io/wheater/?city={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
     </script>
 
