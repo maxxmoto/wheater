@@ -1344,6 +1344,14 @@ function forecastToday(){
     else r.push('Осадков не ожидается.');
     return r.join('\n');
 }
+function forecastTomorrow(){
+    var d=WDATA.daily||[];if(d.length<2)return'Нет данных о прогнозе на завтра.';
+    var t=d[1];var r=['📅 Прогноз на завтра:'];
+    r.push('Температура: от '+t.low+'° до '+t.high+'°.');
+    if(t.precip>0)r.push('Шанс осадков: '+t.precip+'%.');
+    else r.push('Осадков не ожидается.');
+    return r.join('\n');
+}
 function magnetSay(){
     var m=det().magnetic;
     if(!m) return '🧲 Данные о магнитном поле для этого города сейчас недоступны.';
@@ -1377,7 +1385,9 @@ function think(q){
     if(/солнц|восход|закат|уф/.test(q)) return sunSay();
     if(/дожд|снег|осадк|зонт/.test(q)) return rainSay();
     if(/купа|плав|вода|рек[аеуи]|озер|пляж|море|бассейн/.test(q)) return swimSay();
-    if(/прогноз|сегодня|завтра|недел|погод[ау]/.test(q)) return forecastToday();
+    if(/прогноз|сегодня|завтра|недел|погод[ау]/.test(q)&&/осадк|дожд|снег/.test(q)) return forecastTomorrow();
+    if(/прогноз|сегодня|недел|погод[ау]/.test(q)&&!/завтра/.test(q)) return forecastToday();
+    if(/завтра/.test(q)) return forecastTomorrow();
     if(/привет|здравств|хай|hello/.test(q)) return 'Привет! 👋 Я погодный ИИ в '+cityPrep+'. Спроси меня про прогноз, одежду, магнитные бури или риски погоды.';
     if(/спасибо|благодар/.test(q)) return 'Всегда пожалуйста! 🌤️ Обращайся.';
     return generalSay();
@@ -1454,12 +1464,6 @@ function geminiAsk(question){
     }).then(function(d){
         var txt=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'';
         return txt.trim();
-    }).catch(function(err){
-        return fetch('https://text.pollinations.ai/openai',{
-            method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({model:'openai',max_tokens:700,messages:[{role:'system',content:systemPrompt},{role:'user',content:weatherContext()+'\n\n'+question}]})
-        }).then(function(r){ if(!r.ok) throw err; return r.json(); })
-        .then(function(d){ return (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||''; });
     });
 }
 
